@@ -1,3 +1,6 @@
 *.pyc
 *.lock
 data/
+.project
+.pydevproject
+
