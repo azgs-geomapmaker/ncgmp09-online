@@ -4,8 +4,8 @@ from django.core.exceptions import ValidationError
 # Map is a class that represents the upload of a single NCGMP File Geodatabase
 class GeoMap(models.Model):
     class Meta:
-        db_table = 'maps'
-        verbose_name = 'Maps'
+        db_table = 'geomaps'
+        verbose_name = 'Geologic Maps'
         
     name = models.CharField(max_length=200)
     fgdb_path = models.CharField(max_length=200)
@@ -31,7 +31,7 @@ class GeoMap(models.Model):
             raise LoadError(message)
 
 # The following are classes that represent tables from an NCGMP Database
-#    Each class contains a ForeignKey to the Map Class, which is the upload
+#    Each class contains a ForeignKey to the GeoMap Class, which is the upload
 #    that the feature came into the system with
 
 class MapUnitPolys(models.Model):
