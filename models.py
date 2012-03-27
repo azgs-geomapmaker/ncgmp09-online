@@ -2,6 +2,7 @@ from django.contrib.gis.db import models
 from django.contrib.gis.gdal import DataSource
 from django.core.exceptions import ValidationError
 from validation import GdbValidator
+from dataloader import GdbLoader
 
 # Map is a class that represents the upload of a single NCGMP File Geodatabase
 class GeoMap(models.Model):
@@ -27,14 +28,8 @@ class GeoMap(models.Model):
                 raise ValidationError(validator.validationMessage())
                 
     def load(self):
-        class LoadError(Exception):
-            "Loading data failed"
-            pass
-    
-        from dataloader import load_data
-        success, message = load_data(self)
-        if not success:
-            raise LoadError(message)
+        loader = GdbLoader(self)
+        loader.load()
 
 # The following are classes that represent tables from an NCGMP Database
 #    Each class contains a ForeignKey to the GeoMap Class, which is the upload

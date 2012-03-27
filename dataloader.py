@@ -1,4 +1,3 @@
-from django.contrib.gis.gdal import DataSource, OGRException
 from django.db.models.fields.related import ForeignKey
 from django.db.models import get_models, get_model
 
@@ -15,11 +14,12 @@ class GdbLoader():
         self.geomap = geomap
         self.fgdb = geomap.dataSource
         self.acceptedLayers = [ cls._meta.object_name for cls in get_models() if cls._meta.app_label == "ncgmp" and cls._meta.object_name != "GeoMap" ]
-        
+                
+    def load(self):
         for layerName in self.loadOrder:
             gdalLayer = [ layer for layer in self.fgdb if layer.name == layerName ][0]
             self.loadLayer(gdalLayer)
-            
+                    
     def loadLayer(self, gdalLayer):
         cls = get_model("ncgmp", gdalLayer.name)
         clsFields = [ clsField for clsField in cls._meta.fields ]
