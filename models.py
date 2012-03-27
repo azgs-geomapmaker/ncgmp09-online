@@ -62,7 +62,7 @@ class ContactsAndFaults(models.Model):
     
     owningmap = models.ForeignKey('GeoMap')    
     contactsandfaults_id = models.CharField(max_length=200, unique=True)
-    linetype = models.CharField(max_length=200)
+    type = models.CharField(max_length=200)
     isconcealed = models.IntegerField()
     existenceconfidence = models.CharField(max_length=200)
     identityconfidence = models.CharField(max_length=200)
