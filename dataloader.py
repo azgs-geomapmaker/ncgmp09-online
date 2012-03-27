@@ -1,3 +1,4 @@
+from django.contrib.gis.gdal import DataSource
 from django.db.models.fields.related import ForeignKey
 from django.db.models import get_models, get_model
 
@@ -12,7 +13,7 @@ class GdbLoader():
     
     def __init__(self, geomap):
         self.geomap = geomap
-        self.fgdb = geomap.dataSource
+        self.fgdb = DataSource(geomap.fgdb_path)
         self.acceptedLayers = [ cls._meta.object_name for cls in get_models() if cls._meta.app_label == "ncgmp" and cls._meta.object_name != "GeoMap" ]
                 
     def load(self):
