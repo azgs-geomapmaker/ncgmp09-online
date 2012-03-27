@@ -51,85 +51,58 @@ class GdbValidator():
         
     def validateFields(self):
         output = True
-        for layerName in self.acceptedLayers:
-            gdalLayer = getLayerByName(layerName, self.fgdb)
-            if gdalLayer is None:
-                continue
-            else:
-                requiredFields = set(self.requiredFields[layerName])
-                requiredFieldsPresent = requiredFields.intersection(gdalLayer.fields)
-                if requiredFieldsPresent != requiredFields:
-                    missingFields = list(requiredFields.difference(requiredFieldsPresent))
-                    self.addMissingFields(gdalLayer.name, missingFields)
-                    output = False            
+        for gdalLayer in [ layer for layer in self.fgdb if layer.name in self.acceptedLayers ]:
+            requiredFields = set(self.requiredFields[gdalLayer.name])
+            requiredFieldsPresent = requiredFields.intersection(gdalLayer.fields)
+            if requiredFieldsPresent != requiredFields:
+                missingFields = list(requiredFields.difference(requiredFieldsPresent))
+                self.logs.addMissingFields(gdalLayer.name, missingFields)
+                output = False            
         return output                            
     
     def validateUniqueKeys(self):
         output = True
-        for layerName in self.acceptedLayers:
-            cls = get_model("ncgmp", layerName)
+        for gdalLayer in [ layer for layer in self.fgdb if layer.name in self.acceptedLayers ]:
+            cls = get_model("ncgmp", gdalLayer.name)
             clsFields = cls._meta.fields
-            uniqueFields = [ fld.name for fld in clsFields if fld.name != "id" and fld.unique ]
-            gdalLayer = getLayerByName(layerName, self.fgdb)
-            if gdalLayer is None:
-                continue
-            else:
-                for uniqueField in uniqueFields:                  
-                    gdalField = gdalLayer.fields[ [field.upper() for field in gdalLayer.fields ].index(uniqueField.upper()) ]
-                    values = [ feature.get(gdalField) for feature in gdalLayer ]
-                    countedValues = Counter(values)
-                    repeats = [ i for i in countedValues if countedValues[i] > 1 ]
-                    
-                    if len(repeats) > 0:
-                        self.addRepeatedUniqueValues(layerName, uniqueField, repeats)
-                        output = False
+            uniqueFields = [ fld.name for fld in clsFields if fld.name != "id" and fld.unique ]            
+            for uniqueField in uniqueFields:                  
+                gdalField = gdalLayer.fields[ [field.upper() for field in gdalLayer.fields ].index(uniqueField.upper()) ]
+                values = [ feature.get(gdalField) for feature in gdalLayer ]
+                countedValues = Counter(values)
+                repeats = [ i for i in countedValues if countedValues[i] > 1 ]
+                
+                if len(repeats) > 0:
+                    self.logs.addRepeatedUniqueValues(gdalLayer.name, uniqueField, repeats)
+                    output = False
         return output
     
     def validateForeignKeys(self):
         output = True
-        for layerName in self.acceptedLayers:
-            cls = get_model("ncgmp", layerName)
+        for gdalLayer in [ layer for layer in self.fgdb if layer.name in self.acceptedLayers ]:
+            cls = get_model("ncgmp", gdalLayer.name)
             clsFields = cls._meta.fields
-            fkFields = [ field for field in clsFields if isinstance(field, ForeignKey) and field.name != "owningmap" ]
-            gdalLayer = getLayerByName(layerName, self.fgdb)
-            if gdalLayer is None:
-                continue
-            else:
-                for fkField in fkFields:
-                    relatedLayerName = fkField.rel.to._meta.object_name
-                    relatedFieldName = fkField.rel.field_name
-                                    
-                    relatedGdalLayer = getLayerByName(relatedLayerName, self.fgdb)
-                    
-                    gdalField = gdalLayer.fields[ [ field.upper() for field in gdalLayer.fields ].index(fkField.name.upper()) ]
-                    relatedGdalField = relatedGdalLayer.fields[ [ field.upper() for field in relatedGdalLayer.fields ].index(relatedFieldName.upper()) ]
-                    
-                    fKeys = set([ feature.get(gdalField) for feature in gdalLayer ])
-                    relatedKeys = set([ feature.get(relatedGdalField) for feature in relatedGdalLayer ])
-                    
-                    missingKeys = fKeys.difference(relatedKeys)
-                    if len(missingKeys) > 0:
-                        self.addMissingForeignKeys(layerName, fkField.name, relatedLayerName, missingKeys)
-                        output = False                    
+            fkFields = [ field for field in clsFields if isinstance(field, ForeignKey) and field.name != "owningmap" ]            
+            for fkField in fkFields:
+                relatedLayerName = fkField.rel.to._meta.object_name
+                relatedFieldName = fkField.rel.field_name
+                                
+                relatedGdalLayer = getLayerByName(relatedLayerName, self.fgdb)
+                
+                gdalField = gdalLayer.fields[ [ field.upper() for field in gdalLayer.fields ].index(fkField.name.upper()) ]
+                relatedGdalField = relatedGdalLayer.fields[ [ field.upper() for field in relatedGdalLayer.fields ].index(relatedFieldName.upper()) ]
+                
+                fKeys = set([ feature.get(gdalField) for feature in gdalLayer ])
+                relatedKeys = set([ feature.get(relatedGdalField) for feature in relatedGdalLayer ])
+                
+                missingKeys = fKeys.difference(relatedKeys)
+                if len(missingKeys) > 0:
+                    self.logs.addMissingForeignKeys(gdalLayer.name, fkField.name, relatedLayerName, missingKeys)
+                    output = False                    
         return output
     
     def validationMessage(self):
         return self.logs.consoleMessage()
-    
-    def addMissingFields(self, table, fields):        
-        self.logs.missingFields[table] = fields
-        
-    def addRepeatedUniqueValues(self, table, field, values):
-        if table not in self.logs.repeatedUniqueValues.keys():
-            self.logs.repeatedUniqueValues[table] = {}
-        
-        self.logs.repeatedUniqueValues[table][field] = values
-    
-    def addMissingForeignKeys(self, table, field, relatedTable, values):
-        if table not in self.logs.missingForeignKeys.keys():
-            self.logs.missingForeignKeys[table] = {}
-            
-        self.logs.missingForeignKeys[table][field + " >> " + relatedTable] = values
             
     class Logger():
         def __init__(self):
@@ -137,7 +110,22 @@ class GdbValidator():
             self.missingFields = {}
             self.repeatedUniqueValues = {}
             self.missingForeignKeys = {}
+            
+        def addMissingFields(self, table, fields):        
+            self.missingFields[table] = fields
+            
+        def addRepeatedUniqueValues(self, table, field, values):
+            if table not in self.repeatedUniqueValues.keys():
+                self.repeatedUniqueValues[table] = {}
+            
+            self.repeatedUniqueValues[table][field] = values
         
+        def addMissingForeignKeys(self, table, field, relatedTable, values):
+            if table not in self.missingForeignKeys.keys():
+                self.missingForeignKeys[table] = {}
+                
+            self.missingForeignKeys[table][field + " >> " + relatedTable] = values
+            
         def consoleMessage(self):
             tableMessage = "\n".join(self.missingTables)
             fieldMessage = "\n".join([tableName + ": " + ", ".join(self.missingFields[tableName]) for tableName in self.missingFields.keys()])

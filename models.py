@@ -24,7 +24,7 @@ class GeoMap(models.Model):
             validator = GdbValidator(self.dataSource)
             valid = validator.isValid()
             if not valid:
-                raise ValidationError(validator.logs.consoleMessage())
+                raise ValidationError(validator.validationMessage())
                 
     def load(self):
         class LoadError(Exception):
