@@ -1,5 +1,7 @@
 from django.contrib.gis.db import models
+from django.contrib.gis.gdal import DataSource
 from django.core.exceptions import ValidationError
+from validation import GdbValidator
 
 # Map is a class that represents the upload of a single NCGMP File Geodatabase
 class GeoMap(models.Model):
@@ -14,12 +16,16 @@ class GeoMap(models.Model):
         return self.name
     
     def clean(self):
-        # First, validate that the FGDB is valid
-        from dataloader import validate_fgdb
-        valid, message = validate_fgdb(self)
-        if not valid:
-            raise ValidationError(message)
-    
+        try: 
+            self.dataSource = DataSource(self.fgdb_path)
+        except:
+            raise ValidationError(self.fgdb_path + " could not be opened by GDAL")
+        else:
+            validator = GdbValidator(self.dataSource)
+            valid = validator.isValid()
+            if not valid:
+                raise ValidationError(validator.logs.consoleMessage())
+                
     def load(self):
         class LoadError(Exception):
             "Loading data failed"
