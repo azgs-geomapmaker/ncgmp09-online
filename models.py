@@ -8,7 +8,7 @@ from dataloader import GdbLoader
 class GeoMap(models.Model):
     class Meta:
         db_table = 'geomaps'
-        verbose_name = 'Geologic Maps'
+        verbose_name = 'Geologic Map'
         
     name = models.CharField(max_length=200)
     fgdb_path = models.CharField(max_length=200)
@@ -25,7 +25,9 @@ class GeoMap(models.Model):
             validator = GdbValidator(self.dataSource)
             valid = validator.isValid()
             if not valid:
-                raise ValidationError(validator.validationMessage())
+                err = ValidationError(validator.validationMessage())
+                err.asJson = validator.logs.asJson()
+                raise err
                 
     def load(self):
         loader = GdbLoader(self)
@@ -59,6 +61,7 @@ class ContactsAndFaults(models.Model):
     class Meta:
         db_table = 'contactsandfaults'
         verbose_name = 'Contact or Fault'
+        verbose_name_plural = 'ContactsAndFaults'
     
     owningmap = models.ForeignKey('GeoMap')    
     contactsandfaults_id = models.CharField(max_length=200, unique=True)
@@ -81,6 +84,7 @@ class DescriptionOfMapUnits(models.Model):
     class Meta:
         db_table = 'descriptionofmapunits'
         verbose_name = 'Description of a Map Unit'
+        verbose_name_plural = 'DescriptionOfMapUnits'
         ordering = ['hierarchykey']
     
     owningmap = models.ForeignKey('GeoMap')    
@@ -107,6 +111,7 @@ class DataSources(models.Model):
     class Meta:
         db_table = 'datasources'
         verbose_name = 'Data Source'
+        verbose_name_plural = 'DataSources'
         ordering = ['source']
         
     owningmap = models.ForeignKey('GeoMap')
