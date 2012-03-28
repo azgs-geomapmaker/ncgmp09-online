@@ -43,3 +43,10 @@ function showErrors(error) {
 		}
 	}
 }
+
+$(document).ready(function() {
+	$(".gm-id").each(function() {
+		var id = $(this).html().replace(/^\s+|\s+$/g, "");
+		$(this).next("a").attr("href", id + "/");
+	});
+});

@@ -5,13 +5,14 @@ from ncgmp.models import GeoMap
 from upload import UploadGeoMapForm
 
 def uploads(req):
+    context = {
+        "gmNames": [ { "id": gm.id, "name": gm.name } for gm in GeoMap.objects.all().order_by('name') ],
+        "title": "Geologic Maps"
+    }
     
     if req.method == 'GET':
         form = UploadGeoMapForm()
-        context = {
-            "title": "New Geologic Map",
-            "form": form
-        }
+        context["form"] = form
         context.update(csrf(req))
         
         return render_to_response('geomap.jade', context)
@@ -21,12 +22,9 @@ def uploads(req):
         form = UploadGeoMapForm(req.POST, req.FILES)
         if form.is_valid():                   
             return HttpResponseRedirect(str(form.fgdbHandler.newGeoMap.id))
-        PUT
-        context = {
-            "title": "New Geologic Map",
-            "form": form,
-            "error": form.fgdbHandler.errJson
-        }
+        
+        context["form"] = form
+        context["error"] = form.fgdbHandler.errJson
         context.update(csrf(req))
         
         return render_to_response('geomap.jade', context)
@@ -46,23 +44,20 @@ def resources(req, id):
         context.update(csrf(req))
         return render_to_response('geomap-resource.jade', context)
     
-    elif req.method == 'POST':
-        return HttpResponse("Not implemented yet")
-    
     elif req.method == 'PUT':
         return HttpResponse("Not implemented yet")
     
     elif req.method == 'DELETE':
         return HttpResponse("Not implemented yet")
     
+    else:
+        return HttpResponseNotAllowed(['GET', 'PUT', 'DELETE'])
+    
 def resourceAttributes(req, id, attribute):
     gm = get_object_or_404(GeoMap, pk=id)
     if attribute not in [ field.name for field in GeoMap._meta.fields ]: raise Http404
         
     if req.method == 'GET':
-        return HttpResponse("Not implemented yet")
-    
-    elif req.method == 'POST':
         return HttpResponse("Not implemented yet")
     
     elif req.method == 'PUT':                
@@ -79,5 +74,5 @@ def resourceAttributes(req, id, attribute):
         
         return HttpResponse('{ "success": true }', content_type="application/json")
     
-    elif req.method == 'DELETE':
-        return HttpResponse("Not implemented yet")
+    else:
+        return HttpResponseNotAllowed(['GET', 'PUT'])

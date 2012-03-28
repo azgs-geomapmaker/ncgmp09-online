@@ -1,9 +1,15 @@
 extends ./base
 
 block scripts
-	script(type="text/javascript", src="/static/ncgmp-show-error.js")
+	script(type="text/javascript", src="/static/ncgmp-geomaps.js")
 	
 block content
+	h1 Existing Geologic Maps
+	ul
+		for gm in gmNames
+			li
+				.hidden.gm-id= gm.id
+				a(href="")= gm.name
 	h1 Upload a New Geologic Map
 	form(enctype="multipart/form-data", method="POST")!= form
 		input(type="hidden", name="csrfmiddlewaretoken", value= csrf_token)
