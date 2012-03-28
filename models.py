@@ -12,6 +12,7 @@ class GeoMap(models.Model):
         
     name = models.CharField(max_length=200)
     fgdb_path = models.CharField(max_length=200)
+    is_loaded = models.BooleanField(default=False)
     
     def __unicode__(self):
         return self.name
@@ -32,6 +33,8 @@ class GeoMap(models.Model):
     def load(self):
         loader = GdbLoader(self)
         loader.load()
+        self.is_loaded = True
+        self.save()
 
 # The following are classes that represent tables from an NCGMP Database
 #    Each class contains a ForeignKey to the GeoMap Class, which is the upload
