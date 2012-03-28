@@ -3,5 +3,5 @@
 data/
 .project
 .pydevproject
-uploads/archives/*.zip
-uploads/fgdbs/*/
+geomaps/uploads/archives/*.zip
+geomaps/uploads/fgdbs/*/

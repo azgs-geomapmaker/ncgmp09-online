@@ -1,9 +1,6 @@
-from django.shortcuts import render_to_response
-from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseRedirect
-from django.core.context_processors import csrf
 from django.core.exceptions import ValidationError
 from django import forms
-from models import GeoMap
+from ncgmp.models import GeoMap
 from zipfile import ZipFile
 import os, shutil
 
@@ -72,34 +69,3 @@ class FgdbHandler():
             raise forms.ValidationError("Your File Geodatabase failed NCGMP09 validation. Issues are listed below.")
         else:
             self.newGeoMap.save()
-            
-def uploads(req):
-    
-    if req.method == 'GET':
-        form = UploadGeoMapForm()
-        context = {
-            "title": "New Geologic Map",
-            "form": form
-        }
-        context.update(csrf(req))
-        
-        return render_to_response('geomap.jade', context)
-    
-    
-    elif req.method == 'POST':
-        form = UploadGeoMapForm(req.POST, req.FILES)
-        if form.is_valid():                   
-            return HttpResponseRedirect("/ncgmp/geomap/" + form.fgdbHandler.newGeoMap.id)
-        
-        context = {
-            "title": "New Geologic Map",
-            "form": form,
-            "error": form.fgdbHandler.errJson
-        }
-        context.update(csrf(req))
-        
-        return render_to_response('geomap.jade', context)
-    
-    
-    else:
-        return HttpResponseNotAllowed(['GET', 'POST'])

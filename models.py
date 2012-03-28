@@ -1,8 +1,8 @@
 from django.contrib.gis.db import models
 from django.contrib.gis.gdal import DataSource
 from django.core.exceptions import ValidationError
-from validation import GdbValidator
-from dataloader import GdbLoader
+from geomaps.validation import GdbValidator
+from geomaps.dataloader import GdbLoader
 
 # Map is a class that represents the upload of a single NCGMP File Geodatabase
 class GeoMap(models.Model):

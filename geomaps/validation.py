@@ -1,6 +1,6 @@
 from django.db.models import get_models, get_model
 from django.db.models.fields.related import ForeignKey
-from utils import getLayerByName
+from ncgmp.utils import getLayerByName
 from collections import Counter
 import json
 
