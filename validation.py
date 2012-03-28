@@ -2,6 +2,7 @@ from django.db.models import get_models, get_model
 from django.db.models.fields.related import ForeignKey
 from utils import getLayerByName
 from collections import Counter
+import json
 
 class GdbValidator():    
     requiredLayers = [ 'DescriptionOfMapUnits', 'DataSources', 'Glossary', 'ContactsAndFaults', 'MapUnitPolys' ]
@@ -73,7 +74,7 @@ class GdbValidator():
                 repeats = [ i for i in countedValues if countedValues[i] > 1 ]
                 
                 if len(repeats) > 0:
-                    self.logs.addRepeatedUniqueValues(gdalLayer.name, uniqueField, repeats)
+                    self.logs.addRepeatedUniqueValues(gdalLayer.name, gdalField, repeats)
                     output = False
         return output
     
@@ -97,7 +98,7 @@ class GdbValidator():
                 
                 missingKeys = fKeys.difference(relatedKeys)
                 if len(missingKeys) > 0:
-                    self.logs.addMissingForeignKeys(gdalLayer.name, fkField.name, relatedLayerName, missingKeys)
+                    self.logs.addMissingForeignKeys(gdalLayer.name, relatedGdalField, relatedLayerName, list(missingKeys))
                     output = False                    
         return output
     
@@ -146,3 +147,13 @@ class GdbValidator():
                 output.append(" ---- MISSING FOREIGN KEYS ---- ") 
                 output.append(fkMessage)
             return "\n".join(output)
+        
+        def asJson(self):
+            output= {}
+            if len(self.missingTables) > 0: output["MissingTables"] = self.missingTables
+            if len(self.missingFields.keys()) > 0: output["MissingFields"] = self.missingFields
+            if len(self.repeatedUniqueValues.keys()) > 0: output["RepeatedUniqueValues"] = self.repeatedUniqueValues
+            if len(self.missingForeignKeys.keys()) > 0: output["MissingForeignKeys"] = self.missingForeignKeys
+            
+            return json.dumps(output)
+            
