@@ -1,0 +1,19 @@
+extends ./base
+
+block styles
+	link(rel="stylesheet/less", type="text/css", href="/static/loading-page.less")
+
+block scripts
+	script(type="text/javascript", src="/static/ncgmp-load-data.js")
+	
+block content
+	h1 #{title}
+	if geomap.is_loaded
+		p Data from this geodatabase has already been loaded
+	else
+		p Data from this geodatabase has not been loaded yet:
+		input(type="hidden", id="csrf", name="csrfmiddlewaretoken", value= csrf_token)
+		input(type="button", id="load-data-button", onclick="loadData(#{geomap.id})", value="Load Data")
+		#waiting.hidden
+			#spinner
+			p Please be patient. This can take a while...
