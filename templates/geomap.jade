@@ -1,0 +1,16 @@
+extends ./base
+
+block scripts
+	script(type="text/javascript", src="/static/ncgmp-show-error.js")
+	
+block content
+	h1 Upload a New Geologic Map
+	form(enctype="multipart/form-data", method="POST")!= form
+		input(type="hidden", name="csrfmiddlewaretoken", value= csrf_token)
+		input(type="submit")
+	if error != null
+		#errors
+		script(type="text/javascript")
+			error = "!{error}"
+			showErrors(error)				
+	
