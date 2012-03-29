@@ -42,6 +42,35 @@ class GeoMap(models.Model):
         layerGen = LayerGenerator(self)
         return layerGen.createNewLayers()
 
+# The following are classes from the GeoSciML Portrayal Schema
+
+class GeologicUnitView(models.Model):
+    class Meta:
+        db_table = 'geologicunitview',
+        verbose_name = "GeologicUnitView"
+    
+    owningmap = models.ForeignKey('GeoMap')
+    identifier = models.CharField(max_length=200, unique=True)
+    name = models.CharField(max_length=200, blank=True)
+    description = models.TextField()
+    geologicUnitType = models.CharField(max_length=200, blank=True)
+    rank = models.CharField(max_length=200, blank=True)
+    lithology = models.CharField(max_length=200, blank=True)
+    geologicHistory = models.TextField()
+    observationMethod = models.CharField(max_length=200, blank=True)
+    positionalAccuracy = models.CharField(max_length=200, blank=True)
+    source = models.CharField(max_length=200, blank=True)
+    geologicUnitType_uri = models.CharField(max_length=200)
+    representativeLithology_uri = models.CharField(max_length=200)
+    representativeAge_uri = models.CharField(max_length=200)
+    representativeLowerAge_uri = models.CharField(max_length=200)
+    representativeUpperAge_uri = models.CharField(max_length=200)
+    specification_uri = models.CharField(max_length=200)
+    metadata_uri = models.CharField(max_length=200)
+    genericSymbolizer = models.CharField(max_length=200, blank=True)
+    shape = models.MultiPolygonField(srid=4326)
+    objects = models.GeoManager()    
+
 # The following are classes that represent tables from an NCGMP Database
 #    Each class contains a ForeignKey to the GeoMap Class, which is the upload
 #    that the feature came into the system with

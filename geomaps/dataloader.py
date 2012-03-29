@@ -14,7 +14,7 @@ class GdbLoader():
     def __init__(self, geomap):
         self.geomap = geomap
         self.fgdb = DataSource(geomap.fgdb_path)
-        self.acceptedLayers = [ cls._meta.object_name for cls in get_models() if cls._meta.app_label == "ncgmp" and cls._meta.object_name != "GeoMap" ]
+        self.acceptedLayers = [ cls._meta.object_name for cls in get_models() if cls._meta.app_label == "ncgmp" and cls._meta.object_name != "GeoMap" and cls._meta.object_name != "GeologicUnitView" ]
                 
     def load(self):
         for layerName in self.loadOrder:

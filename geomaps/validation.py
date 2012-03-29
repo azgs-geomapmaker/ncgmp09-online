@@ -29,7 +29,7 @@ class GdbValidator():
     def __init__(self, fgdb):
         self.logs = self.Logger()
         self.fgdb = fgdb
-        self.acceptedLayers = [ cls._meta.object_name for cls in get_models() if cls._meta.app_label == "ncgmp" and cls._meta.object_name != "GeoMap" ]
+        self.acceptedLayers = [ cls._meta.object_name for cls in get_models() if cls._meta.app_label == "ncgmp" and cls._meta.object_name != "GeoMap" and cls._meta.object_name != "GeologicUnitView" ]
         
     def isValid(self):
         if self.validateTables():
