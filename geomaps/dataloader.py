@@ -1,6 +1,7 @@
 from django.contrib.gis.gdal import DataSource
 from django.db.models.fields.related import ForeignKey
 from django.db.models import get_models, get_model
+from django.db import transaction
 
 class GdbLoader():
     loadOrder = [
@@ -20,10 +21,12 @@ class GdbLoader():
         for layerName in self.loadOrder:
             gdalLayer = [ layer for layer in self.fgdb if layer.name == layerName ][0]
             self.loadLayer(gdalLayer)
-                    
+    
+    @transaction.commit_manually                
     def loadLayer(self, gdalLayer):
         cls = get_model("ncgmp", gdalLayer.name)
         clsFields = [ clsField for clsField in cls._meta.fields if clsField.name != "id" and clsField.name != "owningmap" ]
+        features = []
         for feature in gdalLayer:
             newFeatureArgs = { "owningmap": self.geomap }                                                                           # New features are always related to the GeoMap being loaded
             for clsField in clsFields:                                                                                              # For each field in the destination table....
@@ -40,5 +43,5 @@ class GdbLoader():
                         newFeatureArgs[clsField.name] = feature.get(gdalField)                                                 
                 
             newFeature = cls(**newFeatureArgs)
-            newFeature.save()
-                
+            newFeature.save()                    
+        transaction.commit()

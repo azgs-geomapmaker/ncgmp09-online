@@ -41,7 +41,7 @@ class GeoMap(models.Model):
         
     def createGsmlp(self):
         geologicUnitViewGen = GeologicUnitViewGenerator(self)
-        geologicUnitViewGen.buildGeologiUnitViews()
+        geologicUnitViewGen.buildGeologicUnitViews()
         
     def createLayers(self):
         layerGen = LayerGenerator(self)

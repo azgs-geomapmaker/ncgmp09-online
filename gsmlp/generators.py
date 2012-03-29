@@ -1,4 +1,5 @@
 from django.db.models import get_model
+from django.db import transaction
 
 class GeologicUnitViewGenerator:
     def __init__(self, geomap):
@@ -16,24 +17,29 @@ class GeologicUnitViewGenerator:
             "identifier": mapunitpoly.mapunitpolys_id,
             "name": dmu.name,
             "description": dmu.description,
+            "geologicUnitType": "none",
             "rank": dmu.hierarchykey,
             "lithology": dmu.generallithologyterm,
+            "geologicHistory": "none",
+            "observationMethod": "none",
+            "positionalAccuracy": "none",
             "source": ds.source,
-            "geologicUnitType_uri": "",
-            "representativeLithology_uri": "",
-            "representativeAge_uri": "",
-            "representativeLowerAge_uri": "",
-            "representativeUpperAge_uri": "",
-            "specification_uri": "",
-            "metadata_uri": "",
+            "geologicUnitType_uri": "none",
+            "representativeLithology_uri": "none",
+            "representativeAge_uri": "none",
+            "representativeLowerAge_uri": "none",
+            "representativeUpperAge_uri": "none",
+            "specification_uri": "none",
+            "metadata_uri": "none",
+            "genericSymbolizer": "none",
             "shape": mapunitpoly.shape
         }
         
         GeologicUnitView = get_model("ncgmp", "GeologicUnitView")
-        newGeologicUnitView = GeologicUnitView(**kwargs)
-        newGeologicUnitView.save()
-        
-    def buildGeologiUnitViews(self):
-        for poly in self.mapunitpolys:
-            self.createGeologicUnitView(poly)
+        return GeologicUnitView(**kwargs)
     
+    @transaction.commit_manually
+    def buildGeologicUnitViews(self):
+        for poly in self.mapunitpolys:
+            self.createGeologicUnitView(poly).save()
+        transaction.commit()   
