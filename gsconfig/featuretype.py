@@ -5,7 +5,7 @@ from collections import OrderedDict
 import json
 
 class SqlFeatureTypeDef:
-    def __init__(self, geomap, layerClass):
+    def __init__(self, geomap, workspace, layerClass):
         self.name = "-".join([geomap.name, layerClass._meta.db_table])
         self.title = " for ".join([layerClass._meta.object_name, geomap.title])
         self.fieldNames = [ "\"%s\"" % fld.name for fld in layerClass._meta.fields if fld.name not in ["id", "owningmap"] ]
@@ -19,8 +19,8 @@ class SqlFeatureTypeDef:
         else: raise Exception
         
         self.namespace = {
-            "name": "ncgmp",
-            "href": GeoServerConfig.BaseGeoserverUrl + "rest/namespaces/ncgmp.json"                  
+            "name": workspace.name,
+            "href": GeoServerConfig.BaseGeoserverUrl + "rest/namespaces/" + workspace.name + ".json"                  
         }
         
         self.nativeCRS = layer.srs.wkt
@@ -46,7 +46,7 @@ class SqlFeatureTypeDef:
         self.store = {
             "@class": "dataStore",
             "name": "django",
-            "href": GeoServerConfig.BaseGeoserverUrl + "rest/workspaces/ncgmp/datastores/django.json"              
+            "href": GeoServerConfig.BaseGeoserverUrl + "rest/workspaces/" + workspace.name + "/datastores/" + GeoServerConfig.DataStoreName + ".json"              
         }
         
     def serialize(self):

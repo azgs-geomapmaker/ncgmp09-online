@@ -3,10 +3,10 @@ from ncgmp.config import GeoServerConfig
 from featuretype import SqlFeatureTypeDef
 
 class Catalog(gsconfigCatalog):
-    def create_postgis_sql_layer(self, geomap, layerClass):
-        definition = SqlFeatureTypeDef(geomap, layerClass)
+    def create_postgis_sql_layer(self, geomap, workspace, layerClass):
+        definition = SqlFeatureTypeDef(geomap, workspace, layerClass)
         
-        featureType_url = GeoServerConfig.BaseGeoserverUrl + "rest/workspaces/ncgmp/datastores/django/featuretypes/"
+        featureType_url = GeoServerConfig.BaseGeoserverUrl + "rest/workspaces/" + workspace.name + "/datastores/" + GeoServerConfig.DataStoreName + "/featuretypes/"
         headers = { "Content-Type": "application/json" }
         
         headers, response = self.http.request(featureType_url, "POST", definition.serialize(), headers)
