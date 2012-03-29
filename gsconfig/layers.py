@@ -3,7 +3,7 @@ from ncgmp.config import GeoServerConfig
 from catalog import Catalog
 
 class LayerGenerator:
-    modelNames = [ "MapUnitPolys", "ContactsAndFaults" ]
+    modelNames = [ "MapUnitPolys", "ContactsAndFaults", "GeologicUnitView" ]
     
     def __init__(self, geomap):
         self.modelsToLoad = [ get_model("ncgmp", modelName) for modelName in self.modelNames ]          

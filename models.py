@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from geomaps.validation import GdbValidator
 from geomaps.dataloader import GdbLoader
 from gsconfig.layers import LayerGenerator
+from gsmlp.generators import GeologicUnitViewGenerator
 
 # Map is a class that represents the upload of a single NCGMP File Geodatabase
 class GeoMap(models.Model):
@@ -38,6 +39,10 @@ class GeoMap(models.Model):
         self.is_loaded = True
         self.save()
         
+    def createGsmlp(self):
+        geologicUnitViewGen = GeologicUnitViewGenerator(self)
+        geologicUnitViewGen.buildGeologiUnitViews()
+        
     def createLayers(self):
         layerGen = LayerGenerator(self)
         return layerGen.createNewLayers()
@@ -46,7 +51,7 @@ class GeoMap(models.Model):
 
 class GeologicUnitView(models.Model):
     class Meta:
-        db_table = 'geologicunitview',
+        db_table = 'geologicunitview'
         verbose_name = "GeologicUnitView"
     
     owningmap = models.ForeignKey('GeoMap')
@@ -69,7 +74,10 @@ class GeologicUnitView(models.Model):
     metadata_uri = models.CharField(max_length=200)
     genericSymbolizer = models.CharField(max_length=200, blank=True)
     shape = models.MultiPolygonField(srid=4326)
-    objects = models.GeoManager()    
+    objects = models.GeoManager()
+    
+    def __unicode__(self):
+        return self.identifier 
 
 # The following are classes that represent tables from an NCGMP Database
 #    Each class contains a ForeignKey to the GeoMap Class, which is the upload

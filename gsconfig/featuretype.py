@@ -8,6 +8,7 @@ class SqlFeatureTypeDef:
     def __init__(self, geomap, layerClass):
         self.name = "-".join([geomap.name, layerClass._meta.db_table])
         self.title = " for ".join([layerClass._meta.object_name, geomap.title])
+        self.fieldNames = [ "\"%s\"" % fld.name for fld in layerClass._meta.fields if fld.name not in ["id", "owningmap"] ]
         
         dbSettings = settings.DATABASES['default']
         connectionString = "PG:dbname='" + dbSettings['NAME'] + "' user='" + dbSettings['USER'] + "' password='" + dbSettings['PASSWORD'] + "'"
@@ -39,7 +40,7 @@ class SqlFeatureTypeDef:
         
         self.virtualTable = OrderedDict()
         self.virtualTable["name"] = self.name
-        self.virtualTable["sql"] = "select * from " + layerClass._meta.db_table + " where owningmap_id = " + str(geomap.id)
+        self.virtualTable["sql"] = "select " + ", ".join(self.fieldNames) + " from " + layerClass._meta.db_table + " where owningmap_id = " + str(geomap.id)
         self.virtualTable["geometry"] = self.geometry
         
         self.store = {

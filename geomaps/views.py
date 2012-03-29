@@ -68,6 +68,7 @@ def resourceAttributes(req, id, attribute):
         if attribute == "is_loaded":
             if gm.is_loaded == False and data == "true":
                 gm.load()
+                gm.createGsmlp()
                 layers = gm.createLayers()
             elif gm.is_loaded == True and data == "false":
                 return HttpResponse("Not implemented yet")
