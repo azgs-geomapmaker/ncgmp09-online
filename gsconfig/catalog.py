@@ -12,3 +12,5 @@ class Catalog(gsconfigCatalog):
         headers, response = self.http.request(featureType_url, "POST", definition.serialize(), headers)
         assert 200 <= headers.status < 300, "Tried to create layer but got " + str(headers.status) + ": " + response
         self._cache.clear()
+        
+        return self.get_layer(definition.name)

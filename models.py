@@ -3,6 +3,7 @@ from django.contrib.gis.gdal import DataSource
 from django.core.exceptions import ValidationError
 from geomaps.validation import GdbValidator
 from geomaps.dataloader import GdbLoader
+from gsconfig.layers import LayerGenerator
 
 # Map is a class that represents the upload of a single NCGMP File Geodatabase
 class GeoMap(models.Model):
@@ -36,6 +37,10 @@ class GeoMap(models.Model):
         loader.load()
         self.is_loaded = True
         self.save()
+        
+    def createLayers(self):
+        layerGen = LayerGenerator(self)
+        return layerGen.createNewLayers()
 
 # The following are classes that represent tables from an NCGMP Database
 #    Each class contains a ForeignKey to the GeoMap Class, which is the upload

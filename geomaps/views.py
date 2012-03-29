@@ -63,11 +63,16 @@ def resourceAttributes(req, id, attribute):
     elif req.method == 'PUT':                
         data = [ param for param in req.body.split("&") if param.startswith("value=") ][0]
         data = data.split("=")[1]
+        response = { "success": True }
         
-        if attribute == "is_loaded" and gm.is_loaded == False and data == "true":
-            gm.load()
-        elif attribute == "fgdb_path":
-            return HttpResponseBadRequest("fgdb_path cannot be updated")
+        if attribute == "is_loaded":
+            if gm.is_loaded == False and data == "true":
+                gm.load()
+                layers = gm.createLayers()
+            elif gm.is_loaded == True and data == "false":
+                return HttpResponse("Not implemented yet")
+        elif attribute == "fgdb_path" or "name":
+            return HttpResponseBadRequest(attribute + " cannot be updated")
         else:
             setattr(gm, attribute, data)
             gm.save()
