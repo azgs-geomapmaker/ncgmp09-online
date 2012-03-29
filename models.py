@@ -10,7 +10,8 @@ class GeoMap(models.Model):
         db_table = 'geomaps'
         verbose_name = 'Geologic Map'
         
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=50)
+    title = models.CharField(max_length=200)
     fgdb_path = models.CharField(max_length=200)
     is_loaded = models.BooleanField(default=False)
     

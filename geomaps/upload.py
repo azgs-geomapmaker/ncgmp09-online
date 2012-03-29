@@ -5,11 +5,13 @@ from zipfile import ZipFile
 import os, shutil
 
 class UploadGeoMapForm(forms.Form):
-    name = forms.CharField(max_length=200)
+    name = forms.CharField(max_length=50)
+    title = forms.CharField(max_length=200)
     db = forms.FileField()
     
     def clean_name(self):
         data = self.cleaned_data['name']
+        data = data.replace(" ", "-").lower()
         usedNames = [gm.name for gm in GeoMap.objects.all() ]
         if data in usedNames:
             raise forms.ValidationError("A geologic map called \"" + data + "\" has already been uploaded.")
@@ -20,7 +22,7 @@ class UploadGeoMapForm(forms.Form):
         if data.content_type != "application/zip":
             raise forms.ValidationError("Please upload a zipped File Geodatabase")
         
-        self.fgdbHandler = FgdbHandler(data, self.cleaned_data['name'])
+        self.fgdbHandler = FgdbHandler(data, self.cleaned_data['name'], self.cleaned_data['title'])
         self.fgdbHandler.saveZipfile()
         self.fgdbHandler.unzipFile()
         self.fgdbHandler.validateFgdb()
@@ -28,9 +30,10 @@ class UploadGeoMapForm(forms.Form):
         return data
     
 class FgdbHandler():
-    def __init__(self, uploadedFile, geomapName):
+    def __init__(self, uploadedFile, geomapName, geomapTitle):
         self.file = uploadedFile
         self.name = geomapName
+        self.title = geomapTitle
         self.errJson = None
         
     def saveZipfile(self):
@@ -59,7 +62,7 @@ class FgdbHandler():
             self.fgdbLocation = os.path.join(fgdbFolder, fgdbName)
     
     def validateFgdb(self):
-        self.newGeoMap = GeoMap(name=self.name, fgdb_path=self.fgdbLocation)
+        self.newGeoMap = GeoMap(name=self.name, title=self.title, fgdb_path=self.fgdbLocation)
         try:
             self.newGeoMap.clean()
         except ValidationError as err:

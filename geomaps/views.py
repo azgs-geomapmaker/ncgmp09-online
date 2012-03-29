@@ -6,7 +6,7 @@ from upload import UploadGeoMapForm
 
 def uploads(req):
     context = {
-        "gmNames": [ { "id": gm.id, "name": gm.name } for gm in GeoMap.objects.all().order_by('name') ],
+        "gms": [ { "id": gm.id, "name": gm.name, "title": gm.title } for gm in GeoMap.objects.all().order_by('title') ],
         "title": "Geologic Maps"
     }
     
@@ -38,7 +38,7 @@ def resources(req, id):
     if req.method == 'GET':
         gm = get_object_or_404(GeoMap, pk=id)
         context = {
-            "title": gm.name,
+            "title": gm.title,
             "geomap": gm           
         }
         context.update(csrf(req))

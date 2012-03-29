@@ -6,7 +6,8 @@ import json
 
 class SqlFeatureTypeDef:
     def __init__(self, geomap, layerClass):
-        self.name = geomap.name.replace(" ", "-")
+        self.name = "-".join([geomap.name, layerClass._meta.db_table])
+        self.title = " for ".join([layerClass._meta.object_name, geomap.title])
         
         dbSettings = settings.DATABASES['default']
         connectionString = "PG:dbname='" + dbSettings['NAME'] + "' user='" + dbSettings['USER'] + "' password='" + dbSettings['PASSWORD'] + "'"
@@ -51,6 +52,7 @@ class SqlFeatureTypeDef:
         return json.dumps({
             "featureType": {
                 "name": self.name,
+                "title": self.title,
                 "namespace": self.namespace,
                 "nativeCRS": self.nativeCRS,
                 "nativeBoundingBox": self.nativeBoundingBox,

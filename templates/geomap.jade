@@ -6,10 +6,10 @@ block scripts
 block content
 	h1 Existing Geologic Maps
 	ul
-		for gm in gmNames
+		for gm in gms
 			li
 				.hidden.gm-id= gm.id
-				a(href="")= gm.name
+				a(href="")= gm.title
 	h1 Upload a New Geologic Map
 	form(enctype="multipart/form-data", method="POST")!= form
 		input(type="hidden", name="csrfmiddlewaretoken", value= csrf_token)
