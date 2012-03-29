@@ -3,3 +3,6 @@
 - Django version > 1.3.1
 - PostgreSQL 9.1
 - pyjade 1.0.0
+- Tomcat6
+- Geoserver 2.1.3
+- gsconfig.py (https://github.com/dwins/gsconfig.py)
