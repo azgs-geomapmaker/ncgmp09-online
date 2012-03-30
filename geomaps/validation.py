@@ -86,10 +86,17 @@ class GdbValidator():
             fkFields = [ field for field in clsFields if isinstance(field, ForeignKey) and field.name != "owningmap" ]            
             for fkField in fkFields:
                 relatedLayerName = fkField.rel.to._meta.object_name
-                relatedFieldName = fkField.rel.field_name
+                
+                # ----------------------------------------------------------------------------------
+                # Exception for mapunit relationship between MapUnitPolys and DescriptionOfMapUnits
+                if fkField.name.upper() == "MAPUNIT" and gdalLayer.name == "MapUnitPolys":
+                    relatedFieldName = "mapunit"
+                else:
+                    relatedFieldName = fkField.rel.field_name
                                 
                 relatedGdalLayer = getLayerByName(relatedLayerName, self.fgdb)
-                
+                # ----------------------------------------------------------------------------------
+                                
                 gdalField = gdalLayer.fields[ [ field.upper() for field in gdalLayer.fields ].index(fkField.name.upper()) ]
                 relatedGdalField = relatedGdalLayer.fields[ [ field.upper() for field in relatedGdalLayer.fields ].index(relatedFieldName.upper()) ]
                 
