@@ -12,8 +12,14 @@ function loadData(id) {
 		success: function(response) {
 			if (response.success) {
 				window.location.reload();
-			} else {
-				console.log("Fail!!");
+			} 
+		},
+		error: function(xhr) {
+			if (xhr.status === 500) {
+				var message = xhr.responseText.match(/Exception Value: .+\n/)[0].replace(/Exception Value: /, "");
+				$("#waiting").toggleClass("hidden");
+				$("body").append("<p><strong>An error occurred while loading data: </strong></p>");
+				$("body").append("<p>" + message + "</p>");
 			}
 		}
 	});
