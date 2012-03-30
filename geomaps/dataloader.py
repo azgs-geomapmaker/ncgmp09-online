@@ -15,17 +15,16 @@ class GdbLoader():
     def __init__(self, geomap):
         self.geomap = geomap
         self.fgdb = DataSource(geomap.fgdb_path)
-        self.acceptedLayers = [ cls._meta.object_name for cls in get_models() if cls._meta.app_label == "ncgmp" and cls._meta.object_name != "GeoMap" and cls._meta.object_name != "GeologicUnitView" ]
                 
     def load(self):
         for layerName in self.loadOrder:
-            gdalLayer = [ layer for layer in self.fgdb if layer.name == layerName ][0]
-            self.loadLayer(gdalLayer)
+            gdalMatch = [ layer for layer in self.fgdb if layer.name == layerName ]
+            if len(gdalMatch) == 1: self.loadLayer(gdalMatch[0])
     
     @transaction.commit_manually                
     def loadLayer(self, gdalLayer):
         cls = get_model("ncgmp", gdalLayer.name)
-        clsFields = [ clsField for clsField in cls._meta.fields if clsField.name != "id" and clsField.name != "owningmap" ]
+        clsFields = [ clsField for clsField in cls._meta.fields if clsField.name not in ["id", "owningmap"] ]
         upperFields = [ field.upper() for field in gdalLayer.fields ]
         for feature in gdalLayer:
             newFeatureArgs = { "owningmap": self.geomap }                                                                           # New features are always related to the GeoMap being loaded
@@ -35,8 +34,17 @@ class GdbLoader():
                 else:                                    
                     gdalField = gdalLayer.fields[ upperFields.index(clsField.name.upper()) ]                                        # Find the appropriate field in the GDAL Layer                    
                     if isinstance(clsField, ForeignKey):                                                                            # If the field is a Foreign Key
-                        relatedCls = clsField.rel.to                                                                                # Find the related Class                    
-                        relatedFieldName = clsField.rel.field_name                                                                  # Find the field name in the related Class
+                        relatedCls = clsField.rel.to                                                                                # Find the related Class
+                        
+                        # ----------------------------------------------------------------------------------
+                        # Exception for mapunit relationship between MapUnitPolys and DescriptionOfMapUnits
+                        if clsField.name == "mapunit" and gdalLayer.name == "MapUnitPolys":
+                            relatedFieldName = "mapunit"
+                        else:
+                            relatedFieldName = clsField.rel.field_name                                                              # Find the field name in the related Class
+                        # ----------------------------------------------------------------------------------
+                                            
+                                                                                    
                         relatedCriteria = { relatedFieldName: feature.get(gdalField) }                                              # Sets up the filter criteria to find the correct instance of the related Class
                         newFeatureArgs[clsField.name] = relatedCls.objects.get(**relatedCriteria)                                   # Get the related instance, add it to kwargs for the new feature
                     else:                                                                                                           # Field is not a Foreign Key, and is not a Shape field
