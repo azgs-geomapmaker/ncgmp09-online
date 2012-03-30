@@ -19,13 +19,14 @@ class UploadGeoMapForm(forms.Form):
     
     def clean_db(self):
         data = self.cleaned_data['db']
+        self.fgdbHandler = FgdbHandler(data, self.cleaned_data['name'], self.cleaned_data['title'])
+        
         if data.content_type != "application/zip":
             raise forms.ValidationError("Please upload a zipped File Geodatabase")
-        
-        self.fgdbHandler = FgdbHandler(data, self.cleaned_data['name'], self.cleaned_data['title'])
-        self.fgdbHandler.saveZipfile()
-        self.fgdbHandler.unzipFile()
-        self.fgdbHandler.validateFgdb()
+        else:            
+            self.fgdbHandler.saveZipfile()
+            self.fgdbHandler.unzipFile()
+            self.fgdbHandler.validateFgdb()
         
         return data
     
