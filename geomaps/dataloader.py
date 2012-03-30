@@ -9,7 +9,8 @@ class GdbLoader():
         "Glossary",
         "DescriptionOfMapUnits",
         "MapUnitPolys",
-        "ContactsAndFaults"                     
+        "ContactsAndFaults",
+        "StandardLithology"                     
     ]
     
     def __init__(self, geomap):

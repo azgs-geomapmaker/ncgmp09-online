@@ -91,7 +91,7 @@ class MapUnitPolys(models.Model):
     
     owningmap = models.ForeignKey('GeoMap')    
     mapunitpolys_id = models.CharField(max_length=200, unique=True)
-    mapunit = models.ForeignKey('DescriptionOfMapUnits', db_column='mapunit') #, to_field='mapunit')
+    mapunit = models.ForeignKey('DescriptionOfMapUnits', db_column='mapunit')
     identityconfidence = models.CharField(max_length=200)
     label = models.CharField(max_length=200, blank=True)
     symbol = models.CharField(max_length=200, blank=True)
@@ -135,7 +135,7 @@ class DescriptionOfMapUnits(models.Model):
     
     owningmap = models.ForeignKey('GeoMap')    
     descriptionofmapunits_id = models.CharField(max_length=200, unique=True)
-    mapunit = models.CharField(max_length=200) #, unique=True)
+    mapunit = models.CharField(max_length=200)
     label = models.CharField(max_length=200)
     name = models.CharField(max_length=200)
     fullname = models.CharField(max_length=200)
@@ -185,3 +185,35 @@ class Glossary(models.Model):
     def __unicode__(self):
         return self.term
     
+class StandardLithology(models.Model):
+    class Meta:
+        db_table = 'standardlithology'
+        verbose_name_plural = 'Standard Lithology'
+        
+    standardlithology_id = models.CharField(max_length=200, unique=True)
+    mapunit = models.ForeignKey('descriptionofmapunits', db_column='mapunit')
+    parttype = models.CharField(max_length=200)
+    lithology = models.CharField(max_length=200)
+    proportionterm = models.CharField(max_length=200, blank=True)
+    proportionvalue = models.FloatField(max_length=200, blank=True, null=True)
+    scientificconfidence = models.CharField(max_length=200)
+    datasourceid = models.ForeignKey('datasources', db_column='datasourceid', to_field='datasources_id')
+    objects = models.GeoManager()
+    
+    def __unicode__(self):
+        return self.mapunit.mapunit + ': ' + self.lithology
+
+
+# The following are "helper" tables for generating GSMLP effectively
+
+class RepresentativeValue(models.Model):
+    class Meta:
+        db_table = 'representativevalue'
+        
+    mapunit = models.ForeignKey('descriptionofmapunits', db_column='mapunit')
+    representativelithology_uri = models.CharField(max_length=200)
+    representativeage_uri = models.CharField(max_length=200)
+    objects = models.GeoManager()
+    
+    def __unicode__(self):
+        return "Representative values for " + self.mapunit.mapunit 
