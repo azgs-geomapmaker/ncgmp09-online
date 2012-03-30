@@ -37,13 +37,13 @@ class GdbLoader():
                     if isinstance(clsField, ForeignKey):                                                                            # If the field is a Foreign Key
                         relatedCls = clsField.rel.to                                                                                # Find the related Class
                         
-                        # ----------------------------------------------------------------------------------
-                        # Exception for mapunit relationship between MapUnitPolys and DescriptionOfMapUnits
-                        if clsField.name == "mapunit" and gdalLayer.name == "MapUnitPolys":
+                        # -----------------------------------------------------------------------------------------------
+                        # Exception for mapunit relationship to DescriptionOfMapUnits
+                        if clsField.name == "mapunit" and gdalLayer.name in ["MapUnitPolys", "StandardLithology"]:
                             relatedFieldName = "mapunit"
                         else:
                             relatedFieldName = clsField.rel.field_name                                                              # Find the field name in the related Class
-                        # ----------------------------------------------------------------------------------
+                        # -----------------------------------------------------------------------------------------------
                                             
                                                                                     
                         relatedCriteria = { relatedFieldName: feature.get(gdalField) }                                              # Sets up the filter criteria to find the correct instance of the related Class

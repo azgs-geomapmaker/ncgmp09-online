@@ -189,7 +189,8 @@ class StandardLithology(models.Model):
     class Meta:
         db_table = 'standardlithology'
         verbose_name_plural = 'Standard Lithology'
-        
+    
+    owningmap = models.ForeignKey('GeoMap')    
     standardlithology_id = models.CharField(max_length=200, unique=True)
     mapunit = models.ForeignKey('descriptionofmapunits', db_column='mapunit')
     parttype = models.CharField(max_length=200)
@@ -210,6 +211,7 @@ class RepresentativeValue(models.Model):
     class Meta:
         db_table = 'representativevalue'
         
+    owningmap = models.ForeignKey('GeoMap') 
     mapunit = models.ForeignKey('descriptionofmapunits', db_column='mapunit')
     representativelithology_uri = models.CharField(max_length=200)
     representativeage_uri = models.CharField(max_length=200)

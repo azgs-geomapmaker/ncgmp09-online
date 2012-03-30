@@ -88,15 +88,15 @@ class GdbValidator():
             for fkField in fkFields:
                 relatedLayerName = fkField.rel.to._meta.object_name
                 
-                # ----------------------------------------------------------------------------------
-                # Exception for mapunit relationship between MapUnitPolys and DescriptionOfMapUnits
-                if fkField.name.upper() == "MAPUNIT" and gdalLayer.name == "MapUnitPolys":
+                # -----------------------------------------------------------------------------------------------
+                # Exception for mapunit relationship to DescriptionOfMapUnits
+                if fkField.name == "mapunit" and gdalLayer.name in ["MapUnitPolys", "StandardLithology"]:
                     relatedFieldName = "mapunit"
                 else:
                     relatedFieldName = fkField.rel.field_name
                                 
                 relatedGdalLayer = getLayerByName(relatedLayerName, self.fgdb)
-                # ----------------------------------------------------------------------------------
+                # -----------------------------------------------------------------------------------------------
                                 
                 gdalField = gdalLayer.fields[ [ field.upper() for field in gdalLayer.fields ].index(fkField.name.upper()) ]
                 relatedGdalField = relatedGdalLayer.fields[ [ field.upper() for field in relatedGdalLayer.fields ].index(relatedFieldName.upper()) ]
@@ -106,7 +106,7 @@ class GdbValidator():
                 
                 missingKeys = fKeys.difference(relatedKeys)
                 if len(missingKeys) > 0:
-                    self.logs.addMissingForeignKeys(gdalLayer.name, relatedGdalField, relatedLayerName, list(missingKeys))
+                    self.logs.addMissingForeignKeys(gdalLayer.name, gdalField, relatedLayerName, list(missingKeys))
                     output = False                    
         return output
     
