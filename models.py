@@ -91,7 +91,7 @@ class MapUnitPolys(models.Model):
     
     owningmap = models.ForeignKey('GeoMap')    
     mapunitpolys_id = models.CharField(max_length=200, unique=True)
-    mapunit = models.ForeignKey('DescriptionOfMapUnits', db_column='mapunit', to_field='mapunit')
+    mapunit = models.ForeignKey('DescriptionOfMapUnits', db_column='mapunit') #, to_field='mapunit')
     identityconfidence = models.CharField(max_length=200)
     label = models.CharField(max_length=200, blank=True)
     symbol = models.CharField(max_length=200, blank=True)
@@ -135,7 +135,7 @@ class DescriptionOfMapUnits(models.Model):
     
     owningmap = models.ForeignKey('GeoMap')    
     descriptionofmapunits_id = models.CharField(max_length=200, unique=True)
-    mapunit = models.CharField(max_length=200, unique=True)
+    mapunit = models.CharField(max_length=200) #, unique=True)
     label = models.CharField(max_length=200)
     name = models.CharField(max_length=200)
     fullname = models.CharField(max_length=200)
