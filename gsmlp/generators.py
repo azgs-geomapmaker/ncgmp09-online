@@ -36,11 +36,12 @@ class GeologicUnitViewGenerator:
             "shape": mapunitpoly.shape
         }
         
-        if len(repValues) > 0: 
-            kwargs["representativeLithology_uri"] = repvalues[0].representativelithology_uri
-            kwargs["representativeAge_uri"] = repvalues[0].representativeage_uri
-            kwargs["representativeOlderAge_uri"] = repvalues[0].representativeolderage_uri
-            kwargs["representativeYoungerAge_uri"] = repvalues[0].representativeyoungerage_uri
+        if repValues.count() > 0: 
+            repValue = repValues[0]
+            kwargs["representativeLithology_uri"] = repvalue.representativelithology_uri
+            kwargs["representativeAge_uri"] = repvalue.representativeage_uri
+            kwargs["representativeOlderAge_uri"] = repvalue.representativeolderage_uri
+            kwargs["representativeYoungerAge_uri"] = repvalue.representativeyoungerage_uri
             
         GeologicUnitView = get_model("ncgmp", "GeologicUnitView")
         return GeologicUnitView(**kwargs)
