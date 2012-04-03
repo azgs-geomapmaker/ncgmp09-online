@@ -7,6 +7,8 @@ import os, shutil
 class UploadGeoMapForm(forms.Form):
     name = forms.CharField(max_length=50)
     title = forms.CharField(max_length=200)
+    map_type = forms.ChoiceField(choices=(('Direct observation', 'New mapping'), ('Compilation', 'Compilation')))
+    metadata_url = forms.URLField(required=False)
     db = forms.FileField()
     
     def clean_name(self):
@@ -19,7 +21,7 @@ class UploadGeoMapForm(forms.Form):
     
     def clean_db(self):
         data = self.cleaned_data['db']
-        self.fgdbHandler = FgdbHandler(data, self.cleaned_data['name'], self.cleaned_data['title'])
+        self.fgdbHandler = FgdbHandler(data, self) #self.cleaned_data['name'], self.cleaned_data['title'])
         
         if data.content_type != "application/zip":
             raise forms.ValidationError("Please upload a zipped File Geodatabase")
@@ -31,10 +33,12 @@ class UploadGeoMapForm(forms.Form):
         return data
     
 class FgdbHandler():
-    def __init__(self, uploadedFile, geomapName, geomapTitle):
-        self.file = uploadedFile
-        self.name = geomapName
-        self.title = geomapTitle
+    def __init__(self, data, uploadForm): #uploadedFile, geomapName, geomapTitle):
+        self.file = data
+        self.name = uploadForm.cleaned_data['name']
+        self.title = uploadForm.cleaned_data['title']
+        self.map_type = uploadForm.cleaned_data['map_type']
+        self.metadata_url = uploadForm.cleaned_data['metadata_url']
         self.errJson = None
         
     def saveZipfile(self):
@@ -63,7 +67,13 @@ class FgdbHandler():
             self.fgdbLocation = os.path.join(fgdbFolder, fgdbName)
     
     def validateFgdb(self):
-        self.newGeoMap = GeoMap(name=self.name, title=self.title, fgdb_path=self.fgdbLocation)
+        self.newGeoMap = GeoMap(
+            name=self.name, 
+            title=self.title,
+            map_type=self.map_type,
+            metadata_url=self.metadata_url, 
+            fgdb_path=self.fgdbLocation
+        )
         try:
             self.newGeoMap.clean()
         except ValidationError as err:

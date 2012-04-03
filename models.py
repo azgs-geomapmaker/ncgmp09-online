@@ -16,8 +16,8 @@ class GeoMap(models.Model):
     name = models.CharField(max_length=50)
     title = models.CharField(max_length=200)
     fgdb_path = models.CharField(max_length=200)
-    observation_method = models.CharField(max_length=200, choices=(('Direct observation', 'New mapping'), ('Compilation', 'Compilation')))
-    metadata_uri = models.URLField(blank=True)
+    map_type = models.CharField(max_length=200, choices=(('Direct observation', 'New mapping'), ('Compilation', 'Compilation')))
+    metadata_url = models.URLField(blank=True)
     is_loaded = models.BooleanField(default=False)
     
     def __unicode__(self):
