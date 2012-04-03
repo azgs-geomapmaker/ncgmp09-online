@@ -21,7 +21,7 @@ class UploadGeoMapForm(forms.Form):
     
     def clean_db(self):
         data = self.cleaned_data['db']
-        self.fgdbHandler = FgdbHandler(data, self) #self.cleaned_data['name'], self.cleaned_data['title'])
+        self.fgdbHandler = FgdbHandler(data, self) 
         
         if data.content_type != "application/zip":
             raise forms.ValidationError("Please upload a zipped File Geodatabase")
@@ -33,7 +33,7 @@ class UploadGeoMapForm(forms.Form):
         return data
     
 class FgdbHandler():
-    def __init__(self, data, uploadForm): #uploadedFile, geomapName, geomapTitle):
+    def __init__(self, data, uploadForm): 
         self.file = data
         self.name = uploadForm.cleaned_data['name']
         self.title = uploadForm.cleaned_data['title']
