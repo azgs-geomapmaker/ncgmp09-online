@@ -21,16 +21,16 @@ class GeologicUnitViewGenerator:
             "geologicUnitType": "missing",
             "rank": dmu.hierarchykey,
             "lithology": dmu.generallithologyterm,
-            "geologicHistory": dmu.age,                      # OR compile from geologicevents
+            "geologicHistory": dmu.age,
             "observationMethod": self.gm.map_type,
             "positionalAccuracy": "missing",
             "source": ds.source,
             "geologicUnitType_uri": "http://resource.geosciml.org/classifier/cgi/geologicunittype/geologic_unit",
-            "representativeLithology_uri": "http://www.opengis.net/def/nil/OGC/0/missing",            
+            "representativeLithology_uri": "http://www.opengis.net/def/nil/OGC/0/missing", 
             "representativeAge_uri": "http://www.opengis.net/def/nil/OGC/0/missing",
-            "representativeLowerAge_uri": "http://www.opengis.net/def/nil/OGC/0/missing",           # From a related GeologicEvent. Can there be more than one?
-            "representativeUpperAge_uri": "http://www.opengis.net/def/nil/OGC/0/missing",           # From a related GeologicEvent. Can there be more than one?
-            "specification_uri": "http://www.opengis.net/def/nil/OGC/0/missing",                    # What should this be?
+            "representativeOlderAge_uri": "http://www.opengis.net/def/nil/OGC/0/missing",     
+            "representativeYoungerAge_uri": "http://www.opengis.net/def/nil/OGC/0/missing",
+            "specification_uri": "http://www.opengis.net/def/nil/OGC/0/missing",                    
             "metadata_uri": self.gm.metadata_url,           
             "genericSymbolizer": dmu.mapunit,
             "shape": mapunitpoly.shape
@@ -39,7 +39,9 @@ class GeologicUnitViewGenerator:
         if len(repValues) > 0: 
             kwargs["representativeLithology_uri"] = repvalues[0].representativelithology_uri
             kwargs["representativeAge_uri"] = repvalues[0].representativeage_uri
-        
+            kwargs["representativeOlderAge_uri"] = repvalues[0].representativeolderage_uri
+            kwargs["representativeYoungerAge_uri"] = repvalues[0].representativeyoungerage_uri
+            
         GeologicUnitView = get_model("ncgmp", "GeologicUnitView")
         return GeologicUnitView(**kwargs)
     

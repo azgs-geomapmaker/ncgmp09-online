@@ -71,8 +71,8 @@ class GeologicUnitView(models.Model):
     geologicUnitType_uri = models.CharField(max_length=200)
     representativeLithology_uri = models.CharField(max_length=200)
     representativeAge_uri = models.CharField(max_length=200)
-    representativeLowerAge_uri = models.CharField(max_length=200)
-    representativeUpperAge_uri = models.CharField(max_length=200)
+    representativeOlderAge_uri = models.CharField(max_length=200)
+    representativeYoungerAge_uri = models.CharField(max_length=200)
     specification_uri = models.CharField(max_length=200)
     metadata_uri = models.CharField(max_length=200)
     genericSymbolizer = models.CharField(max_length=200, blank=True)
@@ -270,6 +270,8 @@ class RepresentativeValue(models.Model):
     mapunit = models.ForeignKey('descriptionofmapunits', db_column='mapunit')
     representativelithology_uri = models.CharField(max_length=200, blank=True)
     representativeage_uri = models.CharField(max_length=200, blank=True)
+    representativeolderage_uri = models.CharField(max_length=200, blank=True)
+    representativeyoungerage_uri = models.CharField(max_length=200, blank=True)
     objects = models.GeoManager()
     
     def __unicode__(self):
