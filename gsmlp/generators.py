@@ -26,11 +26,11 @@ class GeologicUnitViewGenerator:
             "positionalAccuracy": "missing",
             "source": ds.source,
             "geologicUnitType_uri": "http://resource.geosciml.org/classifier/cgi/geologicunittype/geologic_unit",
-            "representativeLithology_uri": "none",            
-            "representativeAge_uri": "none",
-            "representativeLowerAge_uri": "none",           # From a related GeologicEvent. Can there be more than one?
-            "representativeUpperAge_uri": "none",           # From a related GeologicEvent. Can there be more than one?
-            "specification_uri": "none",                    # What should this be?
+            "representativeLithology_uri": "http://www.opengis.net/def/nil/OGC/0/missing",            
+            "representativeAge_uri": "http://www.opengis.net/def/nil/OGC/0/missing",
+            "representativeLowerAge_uri": "http://www.opengis.net/def/nil/OGC/0/missing",           # From a related GeologicEvent. Can there be more than one?
+            "representativeUpperAge_uri": "http://www.opengis.net/def/nil/OGC/0/missing",           # From a related GeologicEvent. Can there be more than one?
+            "specification_uri": "http://www.opengis.net/def/nil/OGC/0/missing",                    # What should this be?
             "metadata_uri": self.gm.metadata_url,           
             "genericSymbolizer": dmu.mapunit,
             "shape": mapunitpoly.shape
