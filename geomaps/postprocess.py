@@ -4,31 +4,41 @@ class StandardLithologyProcessor:
     def __init__(self, descriptionofmapunits):
         self.dmu = descriptionofmapunits
         
-    def guessRepresentativeLithology(self):                
-        repValue = None
-        repValues = self.dmu.representativevalue_set.all()
-        if len(repValues) == 1: repValue = repValues[0]
+    def guessRepresentativeLithology(self):
+        repValue = self.dmu.representativeValue()
         
         stdLiths = self.dmu.standardlithology_set.all()
         dominantLiths = [ lith for lith in stdLiths if lith.proportionterm.upper() == "DOMINANT" ]
         
-        if repValue:
-            if len(stdLiths) == 1: repValue.representativelithology_uri = stdLiths[0].lithology                
-            elif len(dominantLiths) > 0: repValue.representativelithology_uri = dominantLiths[0].lithology            
-            else: return repValue
-        else:
-            newKwargs = { "owningmap": self.dmu.owningmap, "mapunit": self.dmu }        
-            if len(stdLiths) == 1: newKwargs['representativelithology_uri'] = stdLiths[0].lithology 
-            elif len(dominantLiths) > 0: newKwargs['representativelithology_uri'] = dominantLiths[0].lithology
-            
-            RepresentativeValue = get_model("ncgmp", "RepresentativeValue")
-            newRepValue = RepresentativeValue(**newKwargs)
-            newRepValue.save()
-            return newRepValue
+        if stdLiths.count() == 1: repValue.representativelithology_uri = stdLiths[0].lithology                        
+        elif len(dominantLiths) > 0: repValue.representativelithology_uri = dominantLiths[0].lithology 
+        
+        repValue.save()
             
 class GeologicEventProcessor:
     def __init__(self, descriptionofmapunits):
         self.dmu = descriptionofmapunits
+        
+    def guessRepresentativeAge(self):
+        def getTheRightValue():
+            pass
+        
+        repValue = self.dmu.representativeValue()
+        
+        ExtendedAttributes = get_model("ncgmp", "ExtendedAttributes")
+        GeologicEvents = get_model("ncgmp", "GeologicEvents")
+        
+        extAttrs = ExtendedAttributes.objects.filter(ownerid=self.dmu.descriptionofmapunits_id)
+        preferredAges = extAttrs.filter(property='preferredAge')
+        
+        
+        if preferredAges.count() > 0: extAttr = preferredAges[0]
+        elif extAttrs.count() > 0: extAttr = extAttrs[0]
+        else: return
+        
+        # There's a lot of wacky logic here to deal with the wacky NCGMP encoding.
+        # more later.
+                            
         
 class GlossaryProcessor:
     def __init__(self, geomap):

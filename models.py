@@ -156,8 +156,15 @@ class DescriptionOfMapUnits(models.Model):
     def __unicode__(self):
         return self.name
     
+    def representativeValue(self):
+        repValues = self.dmu.representativevalue_set.all()
+        if repValues.count() > 0: return repValues[0]
+        else: return RepresentativeValue.objects.create(owningmap=self.owningmap, mapunit=self)
+        
     def generateRepresentativeValues(self):
         StandardLithologyProcessor(self).guessRepresentativeLithology()
+        
+    
     
 class DataSources(models.Model):
     class Meta:
