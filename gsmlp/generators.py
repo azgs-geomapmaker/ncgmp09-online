@@ -18,21 +18,21 @@ class GeologicUnitViewGenerator:
             "identifier": mapunitpoly.mapunitpolys_id,
             "name": dmu.name,
             "description": dmu.description,
-            "geologicUnitType": "none",                     # What should this be?
+            "geologicUnitType": "missing",
             "rank": dmu.hierarchykey,
             "lithology": dmu.generallithologyterm,
-            "geologicHistory": "none",                      # Where could this come from?
-            "observationMethod": "none",                    # Where could this come from?
-            "positionalAccuracy": "none",                   # Where could this come from?
+            "geologicHistory": dmu.age,                      # OR compile from geologicevents
+            "observationMethod": self.gm.map_type,
+            "positionalAccuracy": "missing",
             "source": ds.source,
-            "geologicUnitType_uri": "none",                 # Where could this come from?
+            "geologicUnitType_uri": "http://resource.geosciml.org/classifier/cgi/geologicunittype/geologic_unit",
             "representativeLithology_uri": "none",            
             "representativeAge_uri": "none",
             "representativeLowerAge_uri": "none",           # From a related GeologicEvent. Can there be more than one?
             "representativeUpperAge_uri": "none",           # From a related GeologicEvent. Can there be more than one?
             "specification_uri": "none",                    # What should this be?
-            "metadata_uri": "none",                         # Where could this come from?
-            "genericSymbolizer": "none",                    # Where could this come from?
+            "metadata_uri": self.gm.metadata_url,           
+            "genericSymbolizer": dmu.mapunit,
             "shape": mapunitpoly.shape
         }
         
