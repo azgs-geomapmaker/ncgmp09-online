@@ -204,13 +204,55 @@ class StandardLithology(models.Model):
     proportionterm = models.CharField(max_length=200, blank=True)
     proportionvalue = models.FloatField(max_length=200, blank=True, null=True)
     scientificconfidence = models.CharField(max_length=200)
-    datasourceid = models.ForeignKey('datasources', db_column='datasourceid', to_field='datasources_id')
+    datasourceid = models.ForeignKey('DataSources', db_column='datasourceid', to_field='datasources_id')
     objects = models.GeoManager()
     
     def __unicode__(self):
         return self.mapunit.mapunit + ': ' + self.lithology
 
-
+class ExtendedAttributes(models.Model):
+    class Meta:
+        db_table = 'extendedattributes'
+        verbose_name_plural = 'ExtendedAttributes'
+        ordering = ['ownerid']
+    
+    owningmap = models.ForeignKey('GeoMap')    
+    extendedattributes_id = models.CharField(max_length=200)
+    ownertable = models.CharField(max_length=200)
+    ownerid = models.CharField(max_length=200)
+    property = models.CharField(max_length=200)
+    propertyvalue = models.CharField(max_length=200, blank=True)
+    valuelinkid = models.CharField(max_length=200, blank=True)
+    qualifier = models.CharField(max_length=200, blank=True)
+    notes = models.CharField(max_length=200, blank=True)
+    datasourceid = models.ForeignKey('DataSources', db_column='datasourceid', to_field='datasources_id')
+    objects = models.GeoManager()
+    
+    def __unicode__(self):
+        return self.property + ' for ' + self.ownerid
+    
+class GeologicEvents(models.Model):
+    class Meta:
+        db_table = 'geologicevents'
+        verbose_name_plural = 'GeologicEvents'
+        ordering = ['event']
+    
+    owningmap = models.ForeignKey('GeoMap')    
+    geologicevents_id = models.CharField(max_length=200)
+    event = models.CharField(max_length=200)
+    agedisplay = models.CharField(max_length=200)
+    ageyoungerterm = models.CharField(max_length=200, blank=True)
+    ageolderterm = models.CharField(max_length=200, blank=True)
+    timescale = models.CharField(max_length=200, blank=True)
+    ageyoungervalue = models.FloatField(blank=True, null=True)
+    ageoldervalue = models.FloatField(blank=True, null=True)
+    notes = models.CharField(max_length=200, blank=True)
+    datasourceid = models.ForeignKey('DataSources', db_column='datasourceid', to_field='datasources_id')
+    objects = models.GeoManager()
+    
+    def __unicode__(self):
+        return self.event + ': ' + self.agedisplay
+    
 # The following are "helper" tables for generating GSMLP effectively
 
 class RepresentativeValue(models.Model):
