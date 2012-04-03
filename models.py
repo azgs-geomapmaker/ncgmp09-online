@@ -3,6 +3,7 @@ from django.contrib.gis.gdal import DataSource
 from django.core.exceptions import ValidationError
 from geomaps.validation import GdbValidator
 from geomaps.dataloader import GdbLoader
+from geomaps.postprocess import StandardLithologyProcessor
 from gsconfig.layers import LayerGenerator
 from gsmlp.generators import GeologicUnitViewGenerator
 
@@ -15,6 +16,8 @@ class GeoMap(models.Model):
     name = models.CharField(max_length=50)
     title = models.CharField(max_length=200)
     fgdb_path = models.CharField(max_length=200)
+    observation_method = models.CharField(max_length=200, choices=(('Direct observation', 'New mapping'), ('Compilation', 'Compilation')))
+    metadata_uri = models.URLField(blank=True)
     is_loaded = models.BooleanField(default=False)
     
     def __unicode__(self):
@@ -153,6 +156,9 @@ class DescriptionOfMapUnits(models.Model):
     def __unicode__(self):
         return self.name
     
+    def generateRepresentativeValues(self):
+        StandardLithologyProcessor(self).guessRepresentativeLithology()
+    
 class DataSources(models.Model):
     class Meta:
         db_table = 'datasources'
@@ -213,8 +219,8 @@ class RepresentativeValue(models.Model):
         
     owningmap = models.ForeignKey('GeoMap') 
     mapunit = models.ForeignKey('descriptionofmapunits', db_column='mapunit')
-    representativelithology_uri = models.CharField(max_length=200)
-    representativeage_uri = models.CharField(max_length=200)
+    representativelithology_uri = models.CharField(max_length=200, blank=True)
+    representativeage_uri = models.CharField(max_length=200, blank=True)
     objects = models.GeoManager()
     
     def __unicode__(self):
