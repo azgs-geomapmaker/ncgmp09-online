@@ -5,4 +5,5 @@
 - pyjade 1.0.0
 - Tomcat6
 - Geoserver 2.1.3
-- gsconfig.py (https://github.com/dwins/gsconfig.py)
+- [gsconfig.py](https://github.com/dwins/gsconfig.py)
+- [rdflib](https://github.com/RDFLib/rdflib)
