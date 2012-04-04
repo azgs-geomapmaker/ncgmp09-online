@@ -10,7 +10,7 @@ class GeologicUnitViewGenerator:
         
     def createGeologicUnitView(self, mapunitpoly):
         dmu = mapunitpoly.mapunit
-        repValues = dmu.representativevalue_set.all()
+        repValue = dmu.representativeValue()
         ds = mapunitpoly.datasourceid
         
         kwargs = {
@@ -26,22 +26,15 @@ class GeologicUnitViewGenerator:
             "positionalAccuracy": "missing",
             "source": ds.source,
             "geologicUnitType_uri": "http://resource.geosciml.org/classifier/cgi/geologicunittype/geologic_unit",
-            "representativeLithology_uri": "http://www.opengis.net/def/nil/OGC/0/missing", 
-            "representativeAge_uri": "http://www.opengis.net/def/nil/OGC/0/missing",
-            "representativeOlderAge_uri": "http://www.opengis.net/def/nil/OGC/0/missing",     
-            "representativeYoungerAge_uri": "http://www.opengis.net/def/nil/OGC/0/missing",
+            "representativeLithology_uri": repvalue.representativelithology_uri, 
+            "representativeAge_uri": repvalue.representativeage_uri,
+            "representativeOlderAge_uri": repvalue.representativeolderage_uri,     
+            "representativeYoungerAge_uri": repvalue.representativeyoungerage_uri,
             "specification_uri": "http://www.opengis.net/def/nil/OGC/0/missing",                    
             "metadata_uri": self.gm.metadata_url,           
             "genericSymbolizer": dmu.mapunit,
             "shape": mapunitpoly.shape
         }
-        
-        if repValues.count() > 0: 
-            repValue = repValues[0]
-            kwargs["representativeLithology_uri"] = repvalue.representativelithology_uri
-            kwargs["representativeAge_uri"] = repvalue.representativeage_uri
-            kwargs["representativeOlderAge_uri"] = repvalue.representativeolderage_uri
-            kwargs["representativeYoungerAge_uri"] = repvalue.representativeyoungerage_uri
             
         GeologicUnitView = get_model("ncgmp", "GeologicUnitView")
         return GeologicUnitView(**kwargs)
