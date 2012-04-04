@@ -268,11 +268,11 @@ class RepresentativeValue(models.Model):
         
     owningmap = models.ForeignKey('GeoMap') 
     mapunit = models.ForeignKey('descriptionofmapunits', db_column='mapunit')
-    representativelithology_uri = models.CharField(max_length=200, blank=True)
-    representativeage_uri = models.CharField(max_length=200, blank=True)
-    representativeolderage_uri = models.CharField(max_length=200, blank=True)
-    representativeyoungerage_uri = models.CharField(max_length=200, blank=True)
+    representativelithology_uri = models.CharField(max_length=200, default="http://www.opengis.net/def/nil/OGC/0/missing")
+    representativeage_uri = models.CharField(max_length=200, default="http://www.opengis.net/def/nil/OGC/0/missing")
+    representativeolderage_uri = models.CharField(max_length=200, default="http://www.opengis.net/def/nil/OGC/0/missing")
+    representativeyoungerage_uri = models.CharField(max_length=200, default="http://www.opengis.net/def/nil/OGC/0/missing")
     objects = models.GeoManager()
     
     def __unicode__(self):
-        return "Representative values for " + self.mapunit.mapunit 
+        return "Representative values for " + self.mapunit.mapunit
