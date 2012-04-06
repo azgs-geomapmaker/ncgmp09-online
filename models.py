@@ -3,7 +3,7 @@ from django.contrib.gis.gdal import DataSource
 from django.core.exceptions import ValidationError
 from geomaps.validation import GdbValidator
 from geomaps.dataloader import GdbLoader
-from geomaps.postprocess import StandardLithologyProcessor
+from geomaps.postprocess import StandardLithologyProcessor, GeologicEventProcessor
 from gsconfig.layers import LayerGenerator
 from gsmlp.generators import GeologicUnitViewGenerator
 
@@ -41,6 +41,10 @@ class GeoMap(models.Model):
         loader.load()
         self.is_loaded = True
         self.save()
+        
+    def populateRepresentativeValues(self):
+        for dmu in self.descriptionofmapunits_set.all():
+            dmu.generateRepresentativeValues()        
         
     def createGsmlp(self):
         geologicUnitViewGen = GeologicUnitViewGenerator(self)
@@ -157,15 +161,22 @@ class DescriptionOfMapUnits(models.Model):
         return self.name
     
     def representativeValue(self):
-        repValues = self.dmu.representativevalue_set.all()
+        repValues = self.representativevalue_set.all()
         if repValues.count() > 0: return repValues[0]
         else: return RepresentativeValue.objects.create(owningmap=self.owningmap, mapunit=self)
         
     def generateRepresentativeValues(self):
         StandardLithologyProcessor(self).guessRepresentativeLithology()
+        GeologicEventProcessor(self).guessRepresentativeAge()
         
-    
-    
+    def preferredAge(self):
+        extAttrIds = ExtendedAttributes.objects.filter(ownerid=self.descriptionofmapunits_id, property="preferredAge").values_list("valuelinkid", flat=True)
+        return GeologicEvents.objects.filter(geologicevents_id__in=extAttrIds)
+        
+    def geologicHistory(self):
+        extAttrIds = ExtendedAttributes.objects.filter(ownerid=self.descriptionofmapunits_id).exclude(property="preferredAge").values_list("valuelinkid", flat=True)
+        return GeologicEvents.objects.filter(geologicevents_id__in=extAttrIds)
+        
 class DataSources(models.Model):
     class Meta:
         db_table = 'datasources'
@@ -260,6 +271,26 @@ class GeologicEvents(models.Model):
     def __unicode__(self):
         return self.event + ': ' + self.agedisplay
     
+    def mapunits(self):
+        mapUnits = []
+        for ext in ExtendedAttributes.objects.filter(valuelinkid=self.geologicevents_id):
+            try: mapUnits.append(DescriptionOfMapUnits.objects.get(descriptionofmapunits_id=ext.ownerid))
+            except DescriptionOfMapUnits.DoesNotExist: continue
+            
+        return mapUnits
+    
+    def isPreferredAge(self, dmu):
+        if "preferredAge" in ExtendedAttributes.objects.filter(valuelinkid=self.geologicevents_id, ownerid=dmu.descriptionofmapunits_id).values_list("property", flat=True):
+            return True
+        else:
+            return False
+    
+    def inGeologicHistory(self, dmu):
+        if ExtendedAttributes.objects.filter(valuelinkid=self.geologicevents_id, ownerid=dmu.descriptionofmapunits_id).exclude(property="preferredAge").count() > 0:
+            return True
+        else:
+            return False
+          
 # The following are "helper" tables for generating GSMLP effectively
 
 class RepresentativeValue(models.Model):

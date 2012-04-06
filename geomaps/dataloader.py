@@ -10,7 +10,9 @@ class GdbLoader():
         "DescriptionOfMapUnits",
         "MapUnitPolys",
         "ContactsAndFaults",
-        "StandardLithology"                     
+        "StandardLithology",
+        "ExtendedAttributes",
+        "GeologicEvents"                     
     ]
     
     def __init__(self, geomap):
@@ -21,12 +23,12 @@ class GdbLoader():
         for layerName in self.loadOrder:
             gdalMatch = [ layer for layer in self.fgdb if layer.name == layerName ]
             if len(gdalMatch) == 1: self.loadLayer(gdalMatch[0])
-    
-    @transaction.commit_manually                
+                    
     def loadLayer(self, gdalLayer):
         cls = get_model("ncgmp", gdalLayer.name)
         clsFields = [ clsField for clsField in cls._meta.fields if clsField.name not in ["id", "owningmap"] ]
         upperFields = [ field.upper() for field in gdalLayer.fields ]
+        newFeatures = []
         for feature in gdalLayer:
             newFeatureArgs = { "owningmap": self.geomap }                                                                           # New features are always related to the GeoMap being loaded
             for clsField in clsFields:                                                                                              # For each field in the destination table....
@@ -50,7 +52,7 @@ class GdbLoader():
                         newFeatureArgs[clsField.name] = relatedCls.objects.get(**relatedCriteria)                                   # Get the related instance, add it to kwargs for the new feature
                     else:                                                                                                           # Field is not a Foreign Key, and is not a Shape field
                         newFeatureArgs[clsField.name] = feature.get(gdalField)                                                 
-                
-            newFeature = cls(**newFeatureArgs)
-            newFeature.save()                    
-        transaction.commit()
+
+            newFeatures.append(cls(**newFeatureArgs))
+        
+        cls.objects.bulk_create(newFeatures)                    

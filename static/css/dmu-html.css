@@ -1,0 +1,42 @@
+body {
+  font-family: sans-serif;
+}
+
+.dmu_item_block {
+  margin: 20px;  
+}
+
+.dmu_item_block * {
+  padding: 5px;
+}
+
+.dmu_item_color {
+  width: 45px;
+  height: 30px;
+  border: 1px solid black;
+  margin: 5px;
+  float: left;
+}
+
+.dmu_item_label {
+  font-family: "FGDCGeoAge", sans-serif;
+}
+
+.dmu_item_text {
+  font-size: small;
+} 
+
+.dmu_item_title {
+  font-weight: bold;
+  font-size: medium;
+  padding-bottom: 0px;
+}
+
+.dmu_item_description {
+  
+}
+
+.clear_float {
+  clear: both;
+  height: 5px;
+}

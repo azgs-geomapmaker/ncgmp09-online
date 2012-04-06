@@ -1,8 +1,10 @@
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseRedirect, HttpResponseBadRequest, Http404
 from django.core.context_processors import csrf
+from django.core import serializers
 from ncgmp.models import GeoMap
 from upload import UploadGeoMapForm
+import json
 
 def uploads(req):
     context = {
@@ -55,10 +57,9 @@ def resources(req, id):
     
 def resourceAttributes(req, id, attribute):
     gm = get_object_or_404(GeoMap, pk=id)
-    if attribute not in [ field.name for field in GeoMap._meta.fields ]: raise Http404
         
     if req.method == 'GET':
-        return HttpResponse("Not implemented yet")
+        raise NotImplementedError("GET GeoMap attributes")
     
     elif req.method == 'PUT':                
         data = [ param for param in req.body.split("&") if param.startswith("value=") ][0]
@@ -68,11 +69,11 @@ def resourceAttributes(req, id, attribute):
         if attribute == "is_loaded":
             if gm.is_loaded == False and data == "true":
                 gm.load()
-                gm.createGsmlp()
-                layers = gm.createLayers()
+                #gm.createGsmlp()
+                #layers = gm.createLayers()
             elif gm.is_loaded == True and data == "false":
                 return HttpResponse("Not implemented yet")
-        elif attribute == "fgdb_path" or "name":
+        elif attribute in ["fgdb_path", "name", "map_type"]:
             return HttpResponseBadRequest(attribute + " cannot be updated")
         else:
             setattr(gm, attribute, data)
@@ -82,3 +83,13 @@ def resourceAttributes(req, id, attribute):
     
     else:
         return HttpResponseNotAllowed(['GET', 'PUT'])
+    
+def termMapping(req, geomapId):
+    gm = get_object_or_404(GeoMap, pk=geomapId)
+    
+
+    if req.method == 'GET':
+        return render_to_response('term-mapping.jade', { "geomapid": gm.id })
+    
+    else:
+        return HttpResponseNotAllowed(['GET'])

@@ -2,6 +2,8 @@ from django.db.models import get_model
 from django.db import transaction
 
 class GeologicUnitViewGenerator:
+    GeologicUnitView = get_model("ncgmp", "GeologicUnitView")
+    
     def __init__(self, geomap):
         self.gm = geomap
         
@@ -30,17 +32,14 @@ class GeologicUnitViewGenerator:
             "representativeAge_uri": repvalue.representativeage_uri,
             "representativeOlderAge_uri": repvalue.representativeolderage_uri,     
             "representativeYoungerAge_uri": repvalue.representativeyoungerage_uri,
-            "specification_uri": "http://www.opengis.net/def/nil/OGC/0/missing",                    
-            "metadata_uri": self.gm.metadata_url,           
+            "specification_uri": "/ncgmp/gm/" + str(gm.id) + "/dmu/" + str(dmu.id) + "/",                    
+            "metadata_uri": self.gm.metadata_url,
             "genericSymbolizer": dmu.mapunit,
             "shape": mapunitpoly.shape
         }
-            
-        GeologicUnitView = get_model("ncgmp", "GeologicUnitView")
-        return GeologicUnitView(**kwargs)
+                    
+        return self.GeologicUnitView(**kwargs)
     
-    @transaction.commit_manually
     def buildGeologicUnitViews(self):
-        for poly in self.mapunitpolys:
-            self.createGeologicUnitView(poly).save()
-        transaction.commit()   
+        newFeatures = [ self.createGeologicUnitView(poly) for poly in self.mapunitpolys ]
+        self.GeologicUnitView.objects.bulk_create(newFeatures)  

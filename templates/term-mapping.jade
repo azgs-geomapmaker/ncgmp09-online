@@ -1,0 +1,10 @@
+extends ./base
+
+block scripts
+	script(type="text/javascript", src="/static/js/dojo/dojo.js", data-dojo-config="async: true")
+	script(type="text/javascript", src="/static/js/gsmlp/term-mapping.js")
+	script(type="text/javascript")
+		geomapId = !{geomapid};
+				
+block content
+	h1#greeting Hello!

@@ -1,0 +1,34 @@
+{% load filters %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Description of Map Units</title>
+    <meta name="robots" content="NONE,NOARCHIVE" />
+    <link rel="stylesheet" type="text/css" href="/static/css/dmu-html.css" />
+  </head>
+  <body>
+    <div id="dmu_listing_container">
+      {% for description in dmu_list %}      
+      <div id="dmu_{{ description.pk }}_block" class="dmu_item_block">
+        {% if colors|get:description.pk != "#FFFFFF" %}
+        <div id="{{ description.pk }}_color" class="dmu_item_color" style="background: {{ colors|get:description.pk }};">
+          <div id="{{ description.pk }}_label" class="dmu_item_label">
+            <span>{{ description.mapunit }}</span>
+          </div>
+        </div>
+        {% endif %}
+        <div id={{ description.pk }}_text class="dmu_item_text">
+          <div id="{{ description.pk }}_name" class="dmu_item_title">
+            <span>{{ description.name }}</span>
+          </div>        
+          <div id="{{ description.pk }}_description" class="dmu_item_description">
+            <span>{{ description.description }}</span>
+          </div>
+        </div>
+      </div>      
+      <span class="clear_float"></span> 
+      {% endfor %}
+    </div>
+  </body>
+</html>
