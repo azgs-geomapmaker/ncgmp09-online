@@ -75,10 +75,10 @@ def dmuContentNegotiation(accept, dmus, single=True):
     if requestedFormat == "application/json":
         return HttpGeoJsonResponse(dmus, single)
     elif requestedFormat == "text/html":
-        return render_to_response("dmuHtml.html", {"dmu_list": dmus, 'colors': generate_color_dictionary(dmus)})
+        return render_to_response("dmu/dmuHtml.html", {"dmu_list": dmus, 'colors': generate_color_dictionary(dmus)})
     elif requestedFormat == "application/sld":
-        return render_to_response("dmuSld.xml", {"dmu_list": dmus, 'colors': generate_color_dictionary(dmus)}, mimetype="application/xml")
+        return render_to_response("dmu/dmuSld.xml", {"dmu_list": dmus, 'colors': generate_color_dictionary(dmus)}, mimetype="application/xml")
     elif requestedFormat == "text/mss":
-        return render_to_response("dmuMss.mss", {"dmu_list": dmus, 'colors': generate_color_dictionary(dmus)}, mimetype="text/mss")
+        return render_to_response("dmu/dmuMss.mss", {"dmu_list": dmus, 'colors': generate_color_dictionary(dmus)}, mimetype="text/mss")
     else:
         return HttpResponse('Not Acceptable', status=406)

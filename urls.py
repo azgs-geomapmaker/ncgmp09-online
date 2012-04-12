@@ -21,9 +21,9 @@ urlpatterns = patterns('',
     
     (r'^gm/(?P<gmId>\d+)/geounitview/$', 'ncgmp.gsmlp.geounitview.byCollection'),
     
-    (r'^gm/$', 'ncgmp.geomaps.views.uploads'),
-    (r'^gm/(?P<id>\d+)/$', 'ncgmp.geomaps.views.resources'),
-    (r'^gm/(?P<id>\d+)/(?P<attribute>.+)/$', 'ncgmp.geomaps.views.resourceAttributes'),
+    (r'^gm/$', 'ncgmp.geomaps.views.byCollection'),
+    (r'^gm/(?P<id>\d+)/$', 'ncgmp.geomaps.views.byResource'),
+    (r'^gm/(?P<id>\d+)/(?P<attribute>.+)/$', 'ncgmp.geomaps.views.byAttribute'),
     
     (r'^vocab/$', 'ncgmp.vocab.views.vocabCollection'),
     (r'^vocab/(?P<vocabId>\d+)/$', 'ncgmp.vocab.views.vocabResource'),

@@ -6,7 +6,7 @@ from ncgmp.models import GeoMap
 from upload import UploadGeoMapForm
 import json
 
-def uploads(req):
+def byCollection(req):
     context = {
         "gms": [ { "id": gm.id, "name": gm.name, "title": gm.title } for gm in GeoMap.objects.all().order_by('title') ],
         "title": "Geologic Maps"
@@ -17,7 +17,7 @@ def uploads(req):
         context["form"] = form
         context.update(csrf(req))
         
-        return render_to_response('geomap.jade', context)
+        return render_to_response('geomap/geomaps.jade', context)
     
     
     elif req.method == 'POST':
@@ -29,13 +29,13 @@ def uploads(req):
         context["error"] = form.fgdbHandler.errJson
         context.update(csrf(req))
         
-        return render_to_response('geomap.jade', context)
+        return render_to_response('geomap/geomaps.jade', context)
     
     
     else:
         return HttpResponseNotAllowed(['GET', 'POST'])
     
-def resources(req, id):
+def byResource(req, id):
     
     if req.method == 'GET':
         gm = get_object_or_404(GeoMap, pk=id)
@@ -44,7 +44,7 @@ def resources(req, id):
             "geomap": gm           
         }
         context.update(csrf(req))
-        return render_to_response('geomap-resource.jade', context)
+        return render_to_response('geomap/geomap-resource.jade', context)
     
     elif req.method == 'PUT':
         return HttpResponse("Not implemented yet")
@@ -55,7 +55,7 @@ def resources(req, id):
     else:
         return HttpResponseNotAllowed(['GET', 'PUT', 'DELETE'])
     
-def resourceAttributes(req, id, attribute):
+def byAttribute(req, id, attribute):
     gm = get_object_or_404(GeoMap, pk=id)
         
     if req.method == 'GET':
@@ -69,8 +69,6 @@ def resourceAttributes(req, id, attribute):
         if attribute == "is_loaded":
             if gm.is_loaded == False and data == "true":
                 gm.load()
-                #gm.createGsmlp()
-                #layers = gm.createLayers()
             elif gm.is_loaded == True and data == "false":
                 return HttpResponse("Not implemented yet")
         elif attribute in ["fgdb_path", "name", "map_type"]:
