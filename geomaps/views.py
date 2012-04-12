@@ -83,13 +83,3 @@ def resourceAttributes(req, id, attribute):
     
     else:
         return HttpResponseNotAllowed(['GET', 'PUT'])
-    
-def termMapping(req, geomapId):
-    gm = get_object_or_404(GeoMap, pk=geomapId)
-    
-
-    if req.method == 'GET':
-        return render_to_response('term-mapping.jade', { "geomapid": gm.id })
-    
-    else:
-        return HttpResponseNotAllowed(['GET'])

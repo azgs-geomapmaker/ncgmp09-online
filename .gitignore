@@ -5,3 +5,4 @@ data/
 .pydevproject
 geomaps/uploads/archives/*.zip
 geomaps/uploads/fgdbs/*/
+static/js/*/*uncompressed.js

@@ -13,7 +13,7 @@ def byCollection(req, gmId, dmuId):
     if dmu.owningmap != gm: return HttpResponseBadRequest("Invalid mapunit resource")
     
     if req.method == "GET":
-        return HttpGeoJsonResponse(StandardLithology.objects.filter(mapunit=dmu))
+        return HttpGeoJsonResponse(StandardLithology.objects.filter(mapunit=dmu), False)
     
     elif req.method == "POST":
         success, response = geoJsonToKwargs(StandardLithology, req.raw_post_data, ["owningmap", "mapunit"])
@@ -25,8 +25,8 @@ def byCollection(req, gmId, dmuId):
         try:
             newSl = StandardLithology(**response)
             newSl.save()
-            return HttpGeoJsonResponse(newSl)
-        except Exception (ex):
+            return HttpGeoJsonResponse([newSl])
+        except Exception as ex:
             return HttpResponseBadRequest(str(ex))
         
     else:
@@ -54,8 +54,8 @@ def byResource(req, gmId, dmuId, lithId):
         try:
             newSl = StandardLithology(**response)
             newSl.save()
-            return HttpGeoJsonResponse(newSl)
-        except Exception (ex):
+            return HttpGeoJsonResponse([newSl])
+        except Exception as ex:
             return HttpResponseBadRequest(str(ex))
         
     elif req.method == "DELETE":
@@ -97,7 +97,7 @@ def byAttribute(req, gmId, dmuId, lithId, lithProp):
         try: 
             setattr(sl, lithProp, data)
             sl.save()
-        except Exception (ex): 
+        except Exception as ex: 
             return HttpResponseBadRequest(str(ex))
         else:
             return HttpResponse(json.dumps({ "success": True }), content_type="application/json")

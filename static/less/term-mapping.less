@@ -1,0 +1,164 @@
+@solid-black-border: 1px solid black;
+@working-pane-height: 550px;
+@regular-padding: 10px;
+@dmu-list-width: 75px;
+@sub-list-height: 120px;
+@sub-list-width: 150px;
+@dmu-label-height: 30px;
+@dmu-static-width: 300px;
+.button(@imgUrl) {
+  height: 16px;
+  width: 16px;
+  padding: 0px;
+  background-image: @imgUrl;
+}
+
+body {
+  width: 100%;
+  padding: 0px;
+  margin: 0px;
+  font-family: Veranda, Arial, sans-serif;
+}
+
+#term-mapping-app {
+  height: @working-pane-height + @dmu-label-height;
+  margin: 15px;
+  padding: @regular-padding;
+  border: @solid-black-border;
+  
+  .label {
+    font-weight: bold;  
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+    
+    li {
+      padding: 5px;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+  
+  #map-unit-label {
+    margin: 0px; 
+    height: @dmu-label-height;
+  }
+  
+  #mapunit-list {
+    width: @dmu-list-width;
+    height: @working-pane-height;
+    overflow: auto;
+    border: @solid-black-border;
+    float: left;
+  }
+  
+  #mapunit-info {
+    margin-left: @dmu-list-width + 10px;
+    padding: @regular-padding;
+    height: @working-pane-height - 2 * @regular-padding;
+    border: @solid-black-border;
+    
+    #dmu-static-info {
+      float: left; 
+      width: @dmu-static-width;      
+      overflow: auto;
+      
+      h3 {
+        margin: 0px;
+        margin-bottom: 10px;
+      }
+      
+      #dmu-attributes {
+        overflow: auto;
+        height: @working-pane-height - 90px;
+        padding-right: 5px;
+        
+        #dmu-description {
+          margin-top: 10px;
+          text-align: justify;          
+        } 
+      }          
+    }
+    
+    .attr-container {
+      border: @solid-black-border;
+      padding: @regular-padding;
+      margin: 15px 0px;
+      margin-left: @dmu-static-width + 10px;
+      height: @sub-list-height + 2 * @regular-padding;
+      
+      h3 {
+        padding: 0px 10px;
+        margin: 0px;
+        position: relative; 
+        top: -22px;
+        background-color: white;
+        display: inline-block;
+      }
+      
+      .controls {
+        display: inline-block;
+        position: relative;
+        top: -19px;
+        left: 10px;
+        background-color: white;
+        padding: 0px 10px;
+        
+        li {
+          display: inline-block;
+        }
+        
+        .add {
+          .button(url("../img/add.png"));
+        }
+        
+        .remove {
+          .button(url("../img/cancel.png"));
+        } 
+      }
+      
+      .sub-attr-container {
+        position: relative;
+        top: -5px;
+        
+        .sub-list {
+          width: @sub-list-width;
+          height: @sub-list-height;
+          overflow: auto;
+          border: @solid-black-border;
+          float: left;        
+        }
+        
+        .sub-info {
+          height: @sub-list-height - 2 * @regular-padding;
+          margin-left: @sub-list-width + 10px;
+          padding: @regular-padding;
+          border: @solid-black-border;
+          
+          .lith-attr, .event-attr {
+            margin: 2px 0px;  
+          }
+          
+          .label {
+            width: 20%;
+            display: inline-block;
+            text-align: right;
+          }
+          
+          .value {
+            width: 75%;
+          }
+          
+          .ui-autocomplete {
+            max-height: 100px;
+          }
+        }
+      }
+      
+    }
+  }
+}

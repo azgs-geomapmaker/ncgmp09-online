@@ -12,7 +12,7 @@ def byCollection(req, gmId):
     
     if req.method == "GET":
         dmus = DescriptionOfMapUnits.objects.filter(owningmap=gm).exclude(paragraphstyle__iexact="heading")
-        return dmuContentNegotiation(req.META['HTTP_ACCEPT'].lower(), dmus)        
+        return dmuContentNegotiation(req.META['HTTP_ACCEPT'].lower(), dmus, False)        
     
     elif req.method == "POST":
         raise NotImplementedError("POST DescriptionOfMapUnits Collection")
@@ -60,7 +60,7 @@ def byAttribute(req, gmId, dmuId, dmuProp):
         try: 
             setattr(dmu, dmuProp, data)
             dmu.save()            
-        except Exception (ex): 
+        except Exception as ex: 
             return HttpResponseBadRequest(str(ex))
         else:
             return HttpResponse(json.dumps({ "success": True }), content_type="application/json")
@@ -68,12 +68,12 @@ def byAttribute(req, gmId, dmuId, dmuProp):
     else:
         return HttpResponseNotAllowed(["GET", "PUT"])
     
-def dmuContentNegotiation(accept, dmus):
+def dmuContentNegotiation(accept, dmus, single=True):
     availableFormats = ["application/json", "text/html", "application/sld", "text/mss"]
     requestedFormat = mimeparse.best_match(availableFormats, accept)
     
     if requestedFormat == "application/json":
-        return HttpGeoJsonResponse(dmus)
+        return HttpGeoJsonResponse(dmus, single)
     elif requestedFormat == "text/html":
         return render_to_response("dmuHtml.html", {"dmu_list": dmus, 'colors': generate_color_dictionary(dmus)})
     elif requestedFormat == "application/sld":

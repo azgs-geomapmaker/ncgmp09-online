@@ -1,10 +1,24 @@
 extends ./base
 
+block styles
+	link(rel="stylesheet/less", type="text/css", href="/static/less/term-mapping.less")
+	link(rel="stylesheet", type="text/css", href="/static/css/jqueryui-greys/jquery-ui-1.8.18.custom.css")
+	
 block scripts
-	script(type="text/javascript", src="/static/js/dojo/dojo.js", data-dojo-config="async: true")
-	script(type="text/javascript", src="/static/js/gsmlp/term-mapping.js")
 	script(type="text/javascript")
-		geomapId = !{geomapid};
-				
+		geomapId = !{geomapId};
+
+	script(type="text/javascript", src="/static/js/underscore-min.js")
+	script(type="text/javascript", src="/static/js/backbone-min.js")
+	script(type="text/javascript", src="/static/js/jquery-ui-1.8.18.custom.min.js")
+	include templates
+	script(type="text/javascript", src="/static/js/gsmlp/utils.js")
+	script(type="text/javascript", src="/static/js/gsmlp/models.js")
+	script(type="text/javascript", src="/static/js/gsmlp/views.js")
+	script(type="text/javascript", src="/static/js/gsmlp/app.js")	
+					
 block content
-	h1#greeting Hello!
+	#term-mapping-app
+		h3#map-unit-label Map Units
+		ul#mapunit-list
+		#mapunit-info

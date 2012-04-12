@@ -13,7 +13,7 @@ def byCollection(req, gmId, dmuId):
     if dmu.owningmap != gm: return HttpResponseBadRequest("Invalid mapunit resource")
     
     if req.method == "GET":
-        return HttpGeoJsonResponse(RepresentativeValue.objects.filter(mapunit=dmu))
+        return HttpGeoJsonResponse(RepresentativeValue.objects.filter(mapunit=dmu), False)
     
     elif req.method == "POST":
         dmu.generateRepresentativeValues()
@@ -64,7 +64,7 @@ def byAttribute(req, gmId, dmuId, repId, repProp):
         try: 
             setattr(rep, repProp, data)
             rep.save()            
-        except Exception (ex): 
+        except Exception as ex: 
             response["success"] = False
             response["message"] = str(ex)
         

@@ -15,7 +15,7 @@ def byCollection(req, gmId, dmuId, qualifier):
     if req.method == "GET":
         if qualifier == "age": response = dmu.geologicHistory()
         else: response = dmu.preferredAge()
-        return HttpGeoJsonResponse(response)
+        return HttpGeoJsonResponse(response, False)
     
     elif req.method == "POST":
         success, response = geoJsonToKwargs(GeologicEvents, req.raw_post_data, ["owningmap"])
@@ -93,7 +93,7 @@ def byAttribute(req, gmId, dmuId, qualifier, ageId, ageProp):
         try: 
             setattr(ge, ageProp, data)
             ge.save()            
-        except Exception (ex):
+        except Exception as ex:
             return HttpResponseBadRequest(str(ex))
         else:
             return HttpResponse(json.dumps({ "success": True }), content_type="application/json")
@@ -105,10 +105,10 @@ def createGeologicEvent(kwargs, qualifier, gm, dmu):
     try:
         newGe = GeologicEvents(**kwargs)
         newGe.save()          
-    except Exception (ex):
+    except Exception as ex:
         return HttpResponseBadRequest(str(ex))
     
-    if (qualifier.lower() == "age" and not newGe.inGeologicHistory()) or (qualifier.lower() == "preferredAge" and not newGe.isPreferredAge()):
+    if (qualifier.lower() == "age" and not newGe.inGeologicHistory(dmu)) or (qualifier.lower() == "preferredage" and not newGe.isPreferredAge(dmu)):
         properties = { "age": "GeologicHistory", "preferredage": "preferredAge"}
         extKwargs = {
             "owningmap": gm,

@@ -6,6 +6,7 @@ from geomaps.dataloader import GdbLoader
 from geomaps.postprocess import StandardLithologyProcessor, GeologicEventProcessor
 from gsconfig.layers import LayerGenerator
 from gsmlp.generators import GeologicUnitViewGenerator
+from vocab.parser import updateVocabulary
 
 # Map is a class that represents the upload of a single NCGMP File Geodatabase
 class GeoMap(models.Model):
@@ -290,7 +291,48 @@ class GeologicEvents(models.Model):
             return True
         else:
             return False
-          
+
+# The following are vocabulary tables for storing a simplified view of CGI vocabularies
+
+class Vocabulary(models.Model):
+    class Meta:
+        db_table = 'cgi_vocabulary'
+        verbose_name_plural = "Vocabularies"
+        
+    name = models.CharField(max_length=200)
+    url = models.URLField()
+    
+    def __unicode__(self):
+        return self.name
+    
+    def update(self):
+        updateVocabulary(self)
+    
+class VocabularyConcept(models.Model):
+    class Meta:
+        db_table = 'cgi_vocabularyconcept'
+        
+    uri = models.CharField(max_length=200)
+    label = models.CharField(max_length=200)
+    definition = models.TextField()
+    vocabulary = models.ForeignKey("Vocabulary")
+    
+    def __unicode__(self):
+        return self.label
+    
+class AgeTerm(models.Model):
+    class Meta:
+        db_table = 'cgi_ageterm'
+        
+    uri = models.CharField(max_length=200)
+    label = models.CharField(max_length=200)
+    olderage = models.CharField(max_length=200)
+    youngerage = models.CharField(max_length=200)
+    vocabulary = models.ForeignKey("Vocabulary")
+    
+    def __unicode__(self):
+        return self.label
+
 # The following are "helper" tables for generating GSMLP effectively
 
 class RepresentativeValue(models.Model):

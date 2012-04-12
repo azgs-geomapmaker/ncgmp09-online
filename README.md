@@ -7,3 +7,7 @@
 - Geoserver 2.1.3
 - [gsconfig.py](https://github.com/dwins/gsconfig.py)
 - [rdflib](https://github.com/RDFLib/rdflib)
+- [mimeparse](http://code.google.com/p/mimeparse/)
+
+## Remember
+- "Generic.Application.Generated" Datasource

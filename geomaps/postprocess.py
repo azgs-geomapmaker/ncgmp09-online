@@ -1,17 +1,14 @@
 from django.db.models import get_model
-from ncgmp.vocab.parser import Vocabulary
 
-timescale = Vocabulary("ICSTimeScale")
-lithology = Vocabulary("SimpleLithology")
-
-timescaleUris = [c.uri for c in timescale.concepts]
-lithologyUris = [c.uri for c in lithology.concepts]
-
-class StandardLithologyProcessor:
+class StandardLithologyProcessor:    
+    
     def __init__(self, descriptionofmapunits):
         self.dmu = descriptionofmapunits
         
     def guessRepresentativeLithology(self):
+        vocab = get_model("ncgmp", "Vocabulary")
+        lithologyUris = vocab.objects.get(name="SimpleLithology").vocabularyconcept.all().values_list("uri", flat=True)
+        
         repValue = self.dmu.representativeValue()
         
         stdLiths = self.dmu.standardlithology_set.all()
@@ -22,7 +19,8 @@ class StandardLithologyProcessor:
         
         repValue.save()
             
-class GeologicEventProcessor:
+class GeologicEventProcessor:    
+    
     def __init__(self, descriptionofmapunits):
         self.dmu = descriptionofmapunits
     
@@ -35,6 +33,9 @@ class GeologicEventProcessor:
             return None
             
     def guessRepresentativeAge(self):
+        vocab = get_model("ncgmp", "Vocabulary")
+        timescaleUris = vocab.objects.get(name="ICSTimeScale").ageterm_set.all().values_list("uri", flat=True)
+    
         repValue = self.dmu.representativeValue()        
         
         ExtendedAttributes = get_model("ncgmp", "ExtendedAttributes")

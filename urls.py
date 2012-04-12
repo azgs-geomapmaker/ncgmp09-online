@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import patterns
 
 urlpatterns = patterns('',    
-    (r'^terminology-mapping/(?P<geomapId>\d+)/$', 'ncgmp.geomaps.views.termMapping'),
+    (r'^terminology-mapping/(?P<geomapId>\d+)/$', 'ncgmp.ui.views.termMapping'),
     
     (r'^gm/(?P<gmId>\d+)/dmu/(?P<dmuId>\d+)/lith/$', 'ncgmp.dmu.lith.byCollection'),    
     (r'^gm/(?P<gmId>\d+)/dmu/(?P<dmuId>\d+)/lith/(?P<lithId>\d+)/$', 'ncgmp.dmu.lith.byResource'),
@@ -22,4 +22,10 @@ urlpatterns = patterns('',
     (r'^gm/$', 'ncgmp.geomaps.views.uploads'),
     (r'^gm/(?P<id>\d+)/$', 'ncgmp.geomaps.views.resources'),
     (r'^gm/(?P<id>\d+)/(?P<attribute>.+)/$', 'ncgmp.geomaps.views.resourceAttributes'),
+    
+    (r'^vocab/$', 'ncgmp.vocab.views.vocabCollection'),
+    (r'^vocab/(?P<vocabId>\d+)/$', 'ncgmp.vocab.views.vocabResource'),
+    (r'^vocab/(?P<vocabId>\d+)/term/$', 'ncgmp.vocab.views.termCollection'),
+    (r'^vocab/(?P<vocabId>\d+)/term/(?P<termId>\d+)/$', 'ncgmp.vocab.views.termResource'),
+    (r'^vocab/(?P<vocabId>\d+)/update/$', 'ncgmp.vocab.views.updateVocabulary'),
 )

@@ -18,7 +18,7 @@ def getLayerByName(layername, datasource):
         
     return output
 
-def HttpGeoJsonResponse(querySet):
+def HttpGeoJsonResponse(querySet, single=True):
     input = json.loads(serialize("json", querySet))
     output = { "type": "FeatureCollection", "features": [] }
     for inputObj in input:
@@ -37,9 +37,25 @@ def HttpGeoJsonResponse(querySet):
                 feature["properties"][fld] = inputObj["fields"][fld]
         output["features"].append(feature)
     
-    if len(querySet) == 1: output = feature
+    if single: output = feature
     return HttpResponse(json.dumps(output), content_type="application/json")
 
+def SimpleJsonResponse(querySet, single=True):
+    input = json.loads(serialize("json", querySet))
+    output = []
+    for inputObj in input:
+        feature = { "id": inputObj["pk"] }
+        for fld in inputObj["fields"].keys():
+            if fld == "shape":
+                geom = GEOSGeometry(inputObj["fields"][fld])
+                feature["geometry"] = geom.json
+            else:
+                feature[fld] = inputObj["fields"][fld]
+        output.append(feature)
+        
+    if single: output = feature
+    return HttpResponse(json.dumps(output), content_type="application/json")
+            
 def geoJsonToKwargs(model, geoJson, ignore=[]):
     input = json.loads(geoJson)
     output = dict()

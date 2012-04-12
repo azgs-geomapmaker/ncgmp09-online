@@ -1,0 +1,71 @@
+script(type="text/template", id="dmu-item-tmpl")
+	div <%= mapunit %>
+	
+script(type="text/template", id="dmu-info-tmpl")
+	#dmu-static-info
+		h3 Map Unit Info
+		#dmu-attributes
+			#dmu-name
+				span.label Name: 
+				span.value <%= name %>
+			#dmu-description
+				span.label Description: 
+				span.value <%= description %>
+	#lithologies.attr-container
+		h3.container-label Lithologies
+		ul.controls(for="lithologies")
+			li.add
+			li.remove
+		.sub-attr-container
+			ul#lith-list.sub-list
+			#lith-info.sub-info
+	#preferred-age.attr-container
+		h3.container-label Preferred Age
+		ul.controls(for="preferredAge")
+			li.add
+			li.remove
+		.sub-attr-container
+			ul#preferred-age-list.sub-list
+			#preferred-age-info.sub-info
+	#events.attr-container
+		h3.container-label Geologic History
+		ul.controls(for="geologicHistory")
+			li.add
+			li.remove
+		.sub-attr-container
+			ul#event-list.sub-list
+			#event-info.sub-info
+		
+		
+script(type="text/template", id="lith-item-tmpl")
+	input(type="checkbox", value="<%= id %>")
+	span <%= lithology %>
+	
+script(type="text/template", id="lith-info-tmpl")
+	.lith-attr(property="lithology")
+		span.label Term: 
+		input.value(vocab="SimpleLithology", uri="<%= lithology %>")
+	.lith-attr(property="parttype")
+		span.label Type: 
+		input.value(vocab="GeologicUnitPartRole", uri="<%= parttype %>")
+	.lith-attr(property="proportionterm")
+		span.label Proportion: 
+		input.value(vocab="ProportionTerm", uri="<%= proportionterm %>")
+		
+script(type="text/template", id="event-item-tmpl")
+	input(type="checkbox", value="<%= id %>")
+	span <%= event %>
+	
+script(type="text/template", id="event-info-tmpl")
+	.event-attr(property="event")
+		span.label Event: 
+		input.value(vocab="EventProcess", uri="<%= event %>")
+	.event-attr(property="agedisplay")
+		span.label Display Age: 
+		input.value(vocab="ICSTimeScale", uri="<%= agedisplay %>")
+	.event-attr(property="ageyoungerterm")
+		span.label Younger Age: 
+		input.value(vocab="ICSTimeScale", uri="<%= ageyoungerterm %>")
+	.event-attr(property="ageolderterm")
+		span.label Older Age: 
+		input.value(vocab="ICSTimeScale", uri="<%= ageolderterm %>")
