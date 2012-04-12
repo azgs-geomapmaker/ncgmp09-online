@@ -32,7 +32,7 @@ var DmuInfo = Backbone.View.extend({
 		if (action == "add") {
 			collection.create(new collection.model({ "mapunit": this.model.id }), { success: function() { refreshList(collection); } });
 		} else {
-			target.parent("ul").next("ul").find("input:checked").each(function() {
+			target.parent("ul").next("div").find("input:checked").each(function() {
 				collection.get($(this).attr("value")).destroy({ success: function() { refreshList(collection); } });
 			});	
 		}					
@@ -254,6 +254,8 @@ var VocabularySelect = Backbone.View.extend({
 				return false;
 			}
 		});
+		
+		this.$el.val(application.vocabularyLookup(this.$el.attr("vocab"), this.selected));
 		
 		return this;
 	}

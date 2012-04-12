@@ -9,11 +9,17 @@ block scripts
 block content
 	h1 #{title}
 	if geomap.is_loaded
-		p Data from this geodatabase has already been loaded
+		p Data from this geodatabase has already been loaded. Now you're ready to...
+		ol
+			li
+				a(href="/ncgmp/terminology-mapping/" + str(geomap.id) + "/") Map standard vocabulary terms to your map unit descriptions
+			li
+				button(type="button", onclick="createGsmlp('" + str(geomap.id) + "')") Create GeoSciML Features for your map
+		
 	else
 		p Data from this geodatabase has not been loaded yet:
 		input(type="hidden", id="csrf", name="csrfmiddlewaretoken", value= csrf_token)
 		input(type="button", id="load-data-button", onclick="loadData(#{geomap.id})", value="Load Data")
-		#waiting.hidden
-			#spinner
-			p Please be patient. This can take a while...
+	#waiting.hidden
+		#spinner
+		p Please be patient. This can take a while...

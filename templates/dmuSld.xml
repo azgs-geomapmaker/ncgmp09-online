@@ -12,12 +12,12 @@
         {% for description in dmu_list %}
         {% if colors|get:description.pk != "#FFFFFF" %}
         <Rule>
-          <Title>{{ description.name }}</Title>
           <Name>{{ description.mapunit }}</Name>
+          <Title>{{ description.name }}</Title>          
           <Abstract>{{ description.description }}</Abstract>
           <ogc:Filter>
             <ogc:PropertyIsEqualTo>
-             <ogc:PropertyName>mapunit</ogc:PropertyName>
+             <ogc:PropertyName>genericSymbolizer</ogc:PropertyName>
              <ogc:Literal>{{ description.mapunit }}</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>

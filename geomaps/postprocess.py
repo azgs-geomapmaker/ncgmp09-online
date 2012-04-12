@@ -7,15 +7,18 @@ class StandardLithologyProcessor:
         
     def guessRepresentativeLithology(self):
         vocab = get_model("ncgmp", "Vocabulary")
-        lithologyUris = vocab.objects.get(name="SimpleLithology").vocabularyconcept.all().values_list("uri", flat=True)
+        lithologyUris = vocab.objects.get(name="SimpleLithology").vocabularyconcept_set.all().values_list("uri", flat=True)
         
         repValue = self.dmu.representativeValue()
         
         stdLiths = self.dmu.standardlithology_set.all()
-        dominantLiths = [ lith for lith in stdLiths if lith.proportionterm.upper() == "DOMINANT" ]
+        dominantLiths = [ lith for lith in stdLiths if lith.proportionterm.upper() == "http://resource.geosciml.org/classifier/cgi/proportionterm/0006" ]
         
         if stdLiths.count() == 1 and stdLiths[0].lithology in lithologyUris: repValue.representativelithology_uri = stdLiths[0].lithology                        
-        elif len(dominantLiths) > 0 and dominantLiths[0].lithology in lithologyUris: repValue.representativelithology_uri = dominantLiths[0].lithology 
+        elif len(dominantLiths) > 0 and dominantLiths[0].lithology in lithologyUris: repValue.representativelithology_uri = dominantLiths[0].lithology
+        else:
+            uriLiths = [ lith for lith in stdLiths if lith.lithology in lithologyUris ]
+            if len(uriLiths) > 0: repValue.representativelithology_uri = uriLiths[0].lithology
         
         repValue.save()
             
@@ -26,7 +29,7 @@ class GeologicEventProcessor:
     
     def _getOne(self, theModel, kwargs):
         try:
-            theModel.objects.get(**kwargs)
+            return theModel.objects.get(**kwargs)
         except theModel.MultipleObjectsReturned:
             return theModel.objects.filter(**kwargs)[0]
         except theModel.DoesNotExist:
@@ -49,7 +52,7 @@ class GeologicEventProcessor:
             repValue.representativeage_uri = self.dmu.age
         
         geologicEvent = None
-        preferredAge = self._getOne(ExtendedAttributes, { "property__iexact": "preferredAge" })
+        preferredAge = self._getOne(ExtendedAttributes, { "property__iexact": "preferredAge", "ownerid": self.dmu.descriptionofmapunits_id })
         
         # There is a preferredAge related to a GeologicEvent
         if preferredAge != None and preferredAge.valuelinkid != '':

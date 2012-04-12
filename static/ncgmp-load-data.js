@@ -24,3 +24,21 @@ function loadData(id) {
 		}
 	});
 }
+
+function createGsmlp(id) {
+	$("#waiting").toggleClass("hidden");
+	
+	$.ajax({
+		type: "post",
+		url: "geounitview/",
+		data: { },
+		dataType: "json",
+		success: function(response) {
+			window.location = "geounitview/"
+		},
+		error: function(response) {
+			$("#waiting").toggleClass("hidden");
+			console.log("fail!");
+		}
+	});
+}
