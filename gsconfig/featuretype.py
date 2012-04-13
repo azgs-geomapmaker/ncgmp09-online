@@ -50,7 +50,7 @@ class SqlFeatureTypeDef:
         self.store = {
             "@class": "dataStore",
             "name": "django",
-            "href": GeoServerConfig.BaseGeoserverUrl + "rest/workspaces/" + workspace.name + "/datastores/" + GeoServerConfig.DataStoreName + ".json"              
+            "href": GeoServerConfig.BaseGeoserverUrl + "rest/workspaces/" + workspace.name + "/datastores/django.json"              
         }
         
     def serialize(self):

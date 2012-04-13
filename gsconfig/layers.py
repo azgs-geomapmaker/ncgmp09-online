@@ -9,8 +9,12 @@ class LayerGenerator:
         self.gsmlpModelsToLoad = [ get_model("ncgmp", modelName) for modelName in self.gsmlpModelNames ]     
         self.gm = geomap
         self.cat = Catalog(GeoServerConfig.BaseGeoserverUrl + "rest", GeoServerConfig.GeoserverAdminUser, GeoServerConfig.GeoserverAdminSecret)
+        
         self.gsmlpWs = self.cat.get_workspace("gsmlp")
-        if self.gsmlpWs is None: self.cat.create_workspace("gsmlp", "http://xmlns.geosciml.org/geosciml-portrayal/1.0")
+        if self.gsmlpWs is None: 
+            self.gsmlpWs = self.cat.create_workspace("gsmlp", "http://xmlns.geosciml.org/geosciml-portrayal/1.0")
+    
+        self.cat.create_postgis_datastore(self.gsmlpWs)
         
     def createNewLayers(self):
         newLayers = []
