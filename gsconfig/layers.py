@@ -3,22 +3,17 @@ from ncgmp.config import GeoServerConfig
 from catalog import Catalog
 
 class LayerGenerator:
-    ncgmpModelNames = [] # At this point, I only care about gsmlp... 
     gsmlpModelNames = ["GeologicUnitView"]
     
     def __init__(self, geomap):
-        self.ncgmpModelsToLoad = [ get_model("ncgmp", modelName) for modelName in self.ncgmpModelNames ]
         self.gsmlpModelsToLoad = [ get_model("ncgmp", modelName) for modelName in self.gsmlpModelNames ]     
         self.gm = geomap
         self.cat = Catalog(GeoServerConfig.BaseGeoserverUrl + "rest", GeoServerConfig.GeoserverAdminUser, GeoServerConfig.GeoserverAdminSecret)
         self.gsmlpWs = self.cat.get_workspace("gsmlp")
-        self.ncgmpWs = self.cat.get_workspace("ncgmp")
+        if self.gsmlpWs is None: self.cat.create_workspace("gsmlp", "http://xmlns.geosciml.org/geosciml-portrayal/1.0")
         
     def createNewLayers(self):
         newLayers = []
-        
-        for model in self.ncgmpModelsToLoad:
-            newLayers.append(self.cat.create_postgis_sql_layer(self.gm, self.ncgmpWs, model))
             
         for model in self.gsmlpModelsToLoad:
             newLayers.append(self.cat.create_postgis_sql_layer(self.gm, self.gsmlpWs, model))
