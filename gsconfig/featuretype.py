@@ -44,7 +44,7 @@ class SqlFeatureTypeDef:
         
         self.virtualTable = OrderedDict()
         self.virtualTable["name"] = self.name
-        self.virtualTable["sql"] = "select " + ", ".join(self.fieldNames) + " from " + layerClass._meta.db_table + " where owningmap_id = " + str(geomap.id)
+        self.virtualTable["sql"] = "select " + ", ".join(self.fieldNames) + " from " + layerClass._meta.db_table
         self.virtualTable["geometry"] = self.geometry
         
         self.store = {

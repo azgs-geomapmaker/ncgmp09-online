@@ -25,7 +25,8 @@ def byCollection(req, gmId):
         except Exception as ex: 
             response["success"] = False
             response["message"] = str(ex)
-            return HttpResponse(json.dumps(response), content_type="application/json", status=500)          
+            #return HttpResponse(json.dumps(response), content_type="application/json", status=500)
+            raise ex          
     
     else:
         return HttpResponseNotAllowed(["GET", "POST"])
