@@ -1,22 +1,27 @@
 extends base
 
+block styles
+	link(rel="stylesheet/less", type="text/css", href="/static/less/geomaps.less")
+
 block scripts
 	script(type="text/javascript", src="/static/js/geomap/geomaps.js")
 	
 block content
-	h1 Existing Geologic Maps
-	ul
-		for gm in gms
-			li
-				.hidden.gm-id= gm.id
-				a(href="")= gm.title
-	h1 Upload a New Geologic Map
-	form(enctype="multipart/form-data", method="POST")!= form
-		input(type="hidden", name="csrfmiddlewaretoken", value= csrf_token)
-		input(type="submit")
-	if error != null
-		#errors
-		script(type="text/javascript")
-			error = "!{error}"
-			showErrors(error)				
+	#maps
+		h2 Existing Geologic Maps
+		ul
+			for gm in gms
+				li
+					.hidden.gm-id= gm.id
+					a(href="")= gm.title
+	#uploads
+		h2 Upload a New Geologic Map
+		form(enctype="multipart/form-data", method="POST")!= form.as_p
+			input(type="hidden", name="csrfmiddlewaretoken", value= csrf_token)
+			input(type="submit")
+		if error != null
+			#errors
+			script(type="text/javascript")
+				error = "!{error}"
+				showErrors(error)				
 	

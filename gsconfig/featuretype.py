@@ -6,8 +6,12 @@ import json
 
 class SqlFeatureTypeDef:
     def __init__(self, geomap, workspace, layerClass):
-        self.name = "-".join([geomap.name, layerClass._meta.db_table])
-        self.title = " for ".join([layerClass._meta.object_name, geomap.title])
+        if workspace.name == "gsmlp":
+            self.name = layerClass._meta.object_name
+            self.title = layerClass._meta.object_name
+        else:
+            self.name = "-".join([geomap.name, layerClass._meta.db_table])
+            self.title = " for ".join([layerClass._meta.object_name, geomap.title])
         self.fieldNames = [ "\"%s\"" % fld.name for fld in layerClass._meta.fields if fld.name not in ["id", "owningmap"] ]
         
         dbSettings = settings.DATABASES['default']

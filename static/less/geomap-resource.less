@@ -1,8 +1,7 @@
-* {
-  font-family: Veranda, Arial, sans-serif;
-}
+@import "base.less";
 
 #spinner {
+  float: left;
   height: 24px;
   width: 24px;
   background-image: url("../img/spinner.gif")
@@ -11,15 +10,32 @@
 button, a {
     background-color: transparent;
     border: none;
-    border-bottom: solid blue 1px;
-    color: blue;    
+    color: @contrast;    
     font-weight: bold;
     font-size: 1em;
     padding: 0px;
     cursor: pointer;
     text-decoration: none;
+    
+    &:hover {
+      @hover-color: lighten(@contrast, 30%);
+      text-decoration: none;
+      color: @hover-color;
+      border-bottom: solid @hover-color 1px;
+    }
 }
 
-li {
-  padding: 10px 0px;
+p {
+  padding-bottom: 10px;
+}
+
+#waiting p {
+  margin-top: 5px;
+  margin-left: 35px;
+}
+
+#leaflet-map {
+  margin-top: 10px;
+  border: 2px solid white;
+  height: 400px;
 }

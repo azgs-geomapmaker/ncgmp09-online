@@ -2,6 +2,7 @@ from django.conf.urls.defaults import patterns
 
 urlpatterns = patterns('',    
     (r'^terminology-mapping/(?P<geomapId>\d+)/$', 'ncgmp.ui.views.termMapping'),
+    (r'^gm/(?P<gmId>\d+)/js/(?P<fileName>.+)$', 'ncgmp.ui.views.javascript'),
     
     (r'^gm/(?P<gmId>\d+)/dmu/(?P<dmuId>\d+)/lith/$', 'ncgmp.dmu.lith.byCollection'),    
     (r'^gm/(?P<gmId>\d+)/dmu/(?P<dmuId>\d+)/lith/(?P<lithId>\d+)/$', 'ncgmp.dmu.lith.byResource'),

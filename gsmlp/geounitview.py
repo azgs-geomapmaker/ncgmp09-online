@@ -1,6 +1,8 @@
 from django.http import HttpResponseNotAllowed, HttpResponseBadRequest, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response, get_object_or_404
+from ncgmp.gsconfig.styles import StyleGenerator
+from ncgmp.gsconfig.layers import LayerGenerator
 from ncgmp.models import GeologicUnitView, DescriptionOfMapUnits, GeoMap
 from ncgmp.utils import HttpGeoJsonResponse
 import json
@@ -17,6 +19,8 @@ def byCollection(req, gmId):
         try: 
             gm.populateRepresentativeValues()
             gm.createGsmlp()
+            LayerGenerator(gm).createNewLayers()
+            StyleGenerator(gm).createStyle()
             return HttpResponse(json.dumps(response), content_type="application/json")
         except Exception as ex: 
             response["success"] = False

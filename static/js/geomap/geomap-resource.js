@@ -34,7 +34,7 @@ function createGsmlp(id) {
 		data: { },
 		dataType: "json",
 		success: function(response) {
-			window.location = "geounitview/"
+			window.location.reload();
 		},
 		error: function(response) {
 			$("#waiting").toggleClass("hidden");

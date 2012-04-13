@@ -1,6 +1,7 @@
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseRedirect, HttpResponseBadRequest, Http404
 from django.core.context_processors import csrf
+from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 from ncgmp.models import GeoMap
 from upload import UploadGeoMapForm
@@ -54,16 +55,20 @@ def byResource(req, id):
     
     else:
         return HttpResponseNotAllowed(['GET', 'PUT', 'DELETE'])
-    
+
+@csrf_exempt    
 def byAttribute(req, id, attribute):
     gm = get_object_or_404(GeoMap, pk=id)
         
     if req.method == 'GET':
         raise NotImplementedError("GET GeoMap attributes")
     
-    elif req.method == 'PUT':                
-        data = [ param for param in req.body.split("&") if param.startswith("value=") ][0]
-        data = data.split("=")[1]
+    elif req.method == 'PUT':
+        if req.META["CONTENT_TYPE"] == "application/json":
+            data = req.body;
+        else:                            
+            data = [ param for param in req.body.split("&") if param.startswith("value=") ][0]
+            data = data.split("=")[1]
         response = { "success": True }
         
         if attribute == "is_loaded":

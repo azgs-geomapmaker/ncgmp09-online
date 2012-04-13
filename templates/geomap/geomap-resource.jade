@@ -2,12 +2,25 @@ extends base
 
 block styles
 	link(rel="stylesheet/less", type="text/css", href="/static/less/geomap-resource.less")
-
+	link(rel="stylesheet", type="text/css", href="/static/style/leaflet.css")
+	
 block scripts
 	script(type="text/javascript", src="/static/js/geomap/geomap-resource.js")
+	script(type="text/javascript", src="/static/js/leaflet-custom.js")
+	script(type="text/javascript", src="/static/js/jade.js")
+	script(type="text/javascript", src="/static/js/proj4js-1.0.3/lib/proj4js-compressed.js")
+	script(type="text/javascript", src="/static/js/maps/TileLayer.Bing.js")
+	script(type="text/javascript", src="/static/js/maps/TileLayer.ESRI.js")
+	script(type="text/javascript", src="/static/js/maps/GeoJSON.WFS.js")
+	script(type="text/javascript", src="/static/js/maps/Popup.Centered.js")
+	script(type="text/javascript", src="/static/js/maps/Control.Hover.js")
+	script(type="text/javascript", src="/static/js/maps/Marker.AttributeFilter.js")
+	script(type="text/javascript", src="/static/js/maps/JadeContent.js")
+	script(type="text/javascript", src="/static/js/maps/DateFilter.js")
+	script(type="text/javascript", src="/ncgmp/gm/" + str(geomap.id) + "/js/maps/Main.js")
 	
 block content
-	h1 #{title}
+	h2 #{title}
 	if geomap.is_loaded
 		p Data from this geodatabase has already been loaded. Now you're ready to...
 		ol
@@ -15,6 +28,7 @@ block content
 				a(href="/ncgmp/terminology-mapping/" + str(geomap.id) + "/") Map standard vocabulary terms to your map unit descriptions
 			li
 				button(type="button", onclick="createGsmlp('" + str(geomap.id) + "')") Create GeoSciML Features for your map
+		#leaflet-map
 		
 	else
 		p Data from this geodatabase has not been loaded yet:
