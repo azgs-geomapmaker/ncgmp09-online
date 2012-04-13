@@ -1,24 +1,28 @@
-from ncgmp.config import DatabaseConfig
+from django.conf import settings
 import json
 
 class PostGISDatastoreDef:
     def __init__(self, workspace):
-        self.dbConfig = DatabaseConfig()
         
         self.workspace = {
             "name": workspace.name,
             "href": workspace.href
         }
+        port = settings.DATABASES['default']['PORT']
+        if port == '': port = 5432
+        
+        host = settings.DATABASES['default']['HOST']
+        if host == '': host = "localhost"
         
         self.connectionParameters = [
             ("Connection timeout", "20"),
-            ("port", self.dbConfig.port),
-            ("passwd", self.dbConfig.secret),
+            ("port", port),
+            ("passwd", settings.DATABASES['default']['PASSWORD']),
             ("dbtype", "postgis"),
-            ("host", self.dbConfig.host),
+            ("host", host),
             ("validate connections", "false"),
             ("max connections", "10"),
-            ("database", self.dbConfig.name),
+            ("database", settings.DATABASES['default']['NAME']),
             ("namespace", self.workspace["href"]),
             ("schema", "public"),
             ("Loose bbox", "true"),
@@ -26,7 +30,7 @@ class PostGISDatastoreDef:
             ("Max open prepared statements", "50"),
             ("preparedStatements", "false"),
             ("Estimated extends", "true"),
-            ("user", self.dbConfig.user),
+            ("user", settings.DATABASES['default']['USER']),
             ("min connections", "1"),
             ("fetch size", "1000"),                                         
         ]
