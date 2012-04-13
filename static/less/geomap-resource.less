@@ -16,12 +16,14 @@ button, a {
     padding: 0px;
     cursor: pointer;
     text-decoration: none;
+    margin-bottom: 1px;
     
     &:hover {
       @hover-color: lighten(@contrast, 30%);
       text-decoration: none;
       color: @hover-color;
       border-bottom: solid @hover-color 1px;
+      margin-bottom: 0px;
     }
 }
 
