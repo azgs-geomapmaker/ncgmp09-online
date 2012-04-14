@@ -1,0 +1,53 @@
+server {
+	#listen   80; ## listen for ipv4; this line is default and implied
+	#listen   [::]:80 default ipv6only=on; ## listen for ipv6
+
+	root /usr/share/nginx/www;
+	index index.html index.htm;
+
+	# Make site accessible from http://localhost/
+	server_name localhost;
+
+	client_max_body_size 200M;
+
+	location / {
+		# First attempt to serve request as file, then
+		# as directory, then fall back to index.html
+		try_files $uri $uri/ /index.html;
+	}
+
+	location /doc {
+		root /usr/share;
+		autoindex on;
+		allow 127.0.0.1;
+		deny all;
+	}
+
+	location /images {
+		root /usr/share;
+		autoindex off;
+	}
+
+	location /geoserver {
+		proxy_pass		http://localhost:8080/geoserver;
+		proxy_set_header        X-Real-IP $remote_addr;
+    		proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+    		proxy_set_header        Host $http_host;
+	}
+
+	location /static {
+		alias /home/ubuntu/ncgmpStatic;
+	}
+
+	location ~ ^/(admin|ncgmp) {
+		fastcgi_pass 127.0.0.1:8181;
+		fastcgi_param PATH_INFO $fastcgi_script_name;
+		fastcgi_param REQUEST_METHOD $request_method;
+		fastcgi_param QUERY_STRING $query_string;
+		fastcgi_param CONTENT_TYPE $content_type;
+		fastcgi_param CONTENT_LENGTH $content_length;
+		fastcgi_pass_header Authorization;
+		fastcgi_intercept_errors off;
+	}
+
+}
