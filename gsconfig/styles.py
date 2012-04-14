@@ -11,7 +11,7 @@ class StyleGenerator:
         dmus = self.gm.descriptionofmapunits_set.all()
         sldResponse = dmuContentNegotiation("application/sld", dmus)
         if sldResponse.status_code == 200:
-            sld = sldResponse.content
+            sld = unicode(sldResponse.content, errors='ignore')
             if self.cat.get_style(self.gm.name) is not None: overwrite = True
             else: overwrite = False
             try:
