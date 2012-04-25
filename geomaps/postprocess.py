@@ -12,7 +12,7 @@ class StandardLithologyProcessor:
         repValue = self.dmu.representativeValue()
         
         stdLiths = self.dmu.standardlithology_set.all()
-        dominantLiths = [ lith for lith in stdLiths if lith.proportionterm.upper() == "http://resource.geosciml.org/classifier/cgi/proportionterm/0005" ]
+        dominantLiths = [ lith for lith in stdLiths if lith.proportionterm.lower() == "http://resource.geosciml.org/classifier/cgi/proportionterm/0005" ]
         
         if stdLiths.count() == 1 and stdLiths[0].lithology in lithologyUris: repValue.representativelithology_uri = stdLiths[0].lithology                        
         elif len(dominantLiths) > 0 and dominantLiths[0].lithology in lithologyUris: repValue.representativelithology_uri = dominantLiths[0].lithology
