@@ -1,42 +1,31 @@
 extends base
 
 block styles
-	link(rel="stylesheet/less", type="text/css", href="/static/less/geomap-resource.less")
+	link(rel="stylesheet/less", type="text/css", href="/static/less/full-map.less")
 	link(rel="stylesheet", type="text/css", href="/static/style/leaflet.css")
 	
 block scripts
+	script(type="text/javascript")
+		geomapId = !{geomap.id};
+		
 	script(type="text/javascript", src="/static/js/geomap/geomap-resource.js")
 	script(type="text/javascript", src="/static/js/leaflet-custom.js")
 	script(type="text/javascript", src="/static/js/jade.js")
 	script(type="text/javascript", src="/static/js/proj4js-1.0.3/lib/proj4js-compressed.js")
+	script(type="text/javascript", src="/static/js/gsmlp/models.js")
 	script(type="text/javascript", src="/static/js/maps/TileLayer.Bing.js")
 	script(type="text/javascript", src="/static/js/maps/TileLayer.ESRI.js")
 	script(type="text/javascript", src="/static/js/maps/GeoJSON.WFS.js")
+	script(type="text/javascript", src="/static/js/maps/GeoJSON.WFS.ClickResponder.js")
 	script(type="text/javascript", src="/static/js/maps/Popup.Centered.js")
 	script(type="text/javascript", src="/static/js/maps/Control.Hover.js")
+	script(type="text/javascript", src="/static/js/maps/Control.Panel.js")
 	script(type="text/javascript", src="/static/js/maps/Marker.AttributeFilter.js")
 	script(type="text/javascript", src="/static/js/maps/JadeContent.js")
 	script(type="text/javascript", src="/static/js/maps/DateFilter.js")
-	script(type="text/javascript", src="/ncgmp/gm/" + str(geomap.id) + "/js/maps/Main.js")
-	
+	script(type="text/javascript", src="/ncgmp/gm/" + str(geomap.id) + "/js/maps/Full-Main.js")
+
+block header
+
 block content
-	h2 #{title}
-	if geomap.is_loaded
-		p Data from this geodatabase has already been loaded. Now you're ready to...
-		ol
-			li
-				a(href="/ncgmp/terminology-mapping/" + str(geomap.id) + "/") Map standard vocabulary terms to your map unit descriptions
-			li
-				button(type="button", onclick="createGsmlp('" + str(geomap.id) + "')") Create GeoSciML-portrayal features for your map
-			li
-				a(href="map/") View a full-screen version of your map			
-	else
-		p Data from this geodatabase has not been loaded yet:
-		input(type="hidden", id="csrf", name="csrfmiddlewaretoken", value= csrf_token)
-		input(type="button", id="load-data-button", onclick="loadData(#{geomap.id})", value="Load Data")
-	#waiting.hidden
-		#spinner
-		p Please be patient. This can take a while...
-	
-	if geomap.is_loaded
-		#leaflet-map
+	#leaflet-map

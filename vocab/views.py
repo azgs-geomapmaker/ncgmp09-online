@@ -14,8 +14,9 @@ def vocabCollection(req):
     else:
         return HttpResponseNotAllowed(["GET"])
 
-def vocabResource(req, vocabId):
+def vocabResource(req, vocabId): 
     vocab = get_object_or_404(Vocabulary, pk=vocabId)
+    
     if req.method == "GET":
         return SimpleJsonResponse([vocab])
     else:
@@ -29,7 +30,7 @@ def termCollection(req, vocabId):
         if uri:
             if vocab.name == "ICSTimeScale": term = get_object_or_404(vocab.ageterm_set.all(), uri=uri)
             else: term = get_object_or_404(vocab.vocabularyconcept_set.all(), uri=uri)
-            return redirect("term/" + str(term.id) + "/")
+            return redirect(str(term.id) + "/")
         
         if vocab.name == "ICSTimeScale":
             terms = vocab.ageterm_set.all()

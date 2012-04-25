@@ -24,7 +24,14 @@ JadeContent = L.Class.extend({
 		if (options.centered) { popup = new L.Popup.Centered(options); }
 		else { popup = new L.Popup(options); }
 		
-		popup.setLatLng(feature.layer._latlng);
+		if (feature.layer._latlng) {
+			popup.setLatLng(feature.layer._latlng);
+		} else if (options.evt) {
+			popup.setLatLng(options.evt.latlng);
+		} else {
+			popup.setLatLng(feature.layer.getBounds().getCenter());
+		}
+		
 		popup.setContent(this.generateContent(feature));
 		return popup;
 	}

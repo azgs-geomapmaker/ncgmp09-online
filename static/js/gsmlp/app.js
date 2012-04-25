@@ -29,3 +29,4 @@ var TermMappingApp = Backbone.View.extend({
 });
 
 var application = new TermMappingApp();
+

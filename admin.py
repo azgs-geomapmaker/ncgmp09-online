@@ -12,9 +12,28 @@ class OwningMapFilterer(admin.ModelAdmin):
 for cls in [cls for cls in get_models() if cls._meta.app_label == "ncgmp" and cls._meta.object_name not in ["GeoMap", "Vocabulary", "VocabularyConcept", "AgeTerm"] ]:
     admin.site.register(cls, OwningMapFilterer)
 
-class TermAdmin(admin.ModelAdmin):
+class ConceptAdmin(admin.ModelAdmin):
     list_filter = ('vocabulary',)
+    search_fields = ['label', 'definition']
+    list_display = ('label', 'definition', 'uri')
+    readonly_fields = ['label', 'definition', 'uri', 'vocabulary']
+    actions = None
     
+    def __init__(self, *args, **kwargs):
+        super(ConceptAdmin, self).__init__(*args, **kwargs)
+        self.list_display_links = (None,)
+        
+class AgeTermAdmin(admin.ModelAdmin):
+    list_filter = ('vocabulary',)
+    search_fields = ['label']
+    list_display = ('label', 'olderage', 'youngerage', 'uri')
+    readonly_fields = ['label', 'olderage', 'youngerage', 'uri', 'vocabulary']
+    actions = None
+    
+    def __init__(self, *args, **kwargs):
+        super(AgeTermAdmin, self).__init__(*args, **kwargs)
+        self.list_display_links = (None,)
+        
 class VocabAdmin(admin.ModelAdmin):
     def update_vocabulary(self, obj):
         return "<a href='/ncgmp/vocab/%s/update/'>Update</a>" % obj.id
@@ -31,7 +50,12 @@ class VocabAdmin(admin.ModelAdmin):
     view_terms.allow_tags = True
     
     list_display = ('__unicode__', 'number_of_terms', 'view_terms', 'update_vocabulary')
+    actions = None
     
+    def __init__(self, *args, **kwargs):
+        super(VocabAdmin, self).__init__(*args, **kwargs)
+        self.list_display_links = (None,)
+        
 admin.site.register(Vocabulary, VocabAdmin)
-admin.site.register(VocabularyConcept, TermAdmin)
-admin.site.register(AgeTerm, TermAdmin)
+admin.site.register(VocabularyConcept, ConceptAdmin)
+admin.site.register(AgeTerm, AgeTermAdmin)

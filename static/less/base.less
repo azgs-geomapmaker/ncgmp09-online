@@ -2,6 +2,8 @@
 @primary-text: #4D2411;
 @background: #60514B;
 @contrast: #265076;
+@body-width: 960px;
+@base-font-size: 13px;
 
 @border-lighten: 10%;
 
@@ -84,10 +86,10 @@ html {
 }
 
 body {
-  width: 960px;
+  width: @body-width;
   margin: 15px auto;
   font-family: Veranda, Arial, sans-serif;
-  font-size: 13px;
+  font-size: @base-font-size;
   color: @primary-text;
   .std-block(@primary, 0px);
 }
@@ -138,6 +140,15 @@ input[type="submit"] {
   -moz-border-bottom-right-radius: 0px;
   -webkit-border-bottom-left-radius: 0px;
   -webkit-border-bottom-right-radius: 0px;
+}
+
+#site-title {
+  color: darken(@primary, 45%);
+  text-decoration: none;
+  
+  &:hover {
+    border-bottom: none;
+  }
 }
 
 #content {

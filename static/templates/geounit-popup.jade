@@ -1,0 +1,22 @@
+#popup-header
+	h3= name
+table#attribute-container
+	tbody
+		tr
+			td.label Display Age: 
+			td.value
+				a(href= representativeAge_uri)= representativeAge_label
+		tr
+			td.label Lithology: 
+			td.value
+				a(href= representativeLithology_uri)= representativeLithology_label
+		tr
+			td.label Younger Age: 
+			td.value
+				a(href= representativeYoungerAge_uri)= representativeYoungerAge_label
+		tr
+			td.label Older Age:
+			td.value
+				a(href= representativeOlderAge_uri)= representativeOlderAge_label
+			
+#description!= description 

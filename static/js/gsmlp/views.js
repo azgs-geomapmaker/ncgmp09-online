@@ -1,17 +1,17 @@
+var currentDmuInfo;
+
 var DmuInfo = Backbone.View.extend({
 	
 	initialize: function(options) {
 		this.listItem = options.listItem;
+		this.$el = $("#mapunit-info");
 	},
-	
-	tagName: "div",
-	
-	className: "dmu-info",
 	
 	template: _.template($("#dmu-info-tmpl").html()),
 	
 	render: function() {
-		this.$el.html(this.template(this.model.toJSON().properties));
+		context = _.extend({}, this.model.toJSON().properties, { "height": $("#mapunit-list").height() + 15 });
+		this.$el.html(this.template(context));
 		return this;
 	},
 	
@@ -34,9 +34,16 @@ var DmuInfo = Backbone.View.extend({
 		} else {
 			target.parent("ul").next("div").find("input:checked").each(function() {
 				collection.get($(this).attr("value")).destroy({ success: function() { refreshList(collection); } });
-			});	
-		}					
+			});
+			target.parent("ul").next("div").children(".sub-info").empty();
+		}
+	},
+	
+	setContentHeight: function() {
+		$("#content").css("height", this.$el.height() + 26 + "px");
 	}
+	
+	
 
 });
 
@@ -63,8 +70,9 @@ var DmuListItem = Backbone.View.extend({
 		this.$el.toggleClass("selected-dmu");
 		
 		// Add the mapunit-info elements
-		dmuView = new DmuInfo({ model: this.model, listItem: this });
-		$("#mapunit-info").empty().append(dmuView.render().el);
+		if (currentDmuInfo) { currentDmuInfo.undelegateEvents(); }		
+		currentDmuInfo = new DmuInfo({ model: this.model, listItem: this });
+		$("#mapunit-info").empty().append(currentDmuInfo.render().el);
 		
 		// Fetch related lithologies and render
 		this.model.getLithologies({ success: this.addLithologies });
@@ -72,6 +80,8 @@ var DmuListItem = Backbone.View.extend({
 		// Fetch related events and preferred ages, render
 		this.model.getGeologicHistory({ success: this.addEvents });
 		this.model.getPreferredAge({ success: this.addPreferredAge });
+		
+		currentDmuInfo.setContentHeight();
 	},
 	
 	addLithologies: function(liths, response) {
@@ -79,6 +89,13 @@ var DmuListItem = Backbone.View.extend({
 		liths.each(function(lith) {
 			var lithView = new LithListItem({ model: lith, id: "lith-item-" + lith.id });
 			$("#lith-list").append(lithView.render().el);
+			
+			if ($("#lith-list").height() > $("#lith-info").height()) {
+				$("#lith-info").css("height", $("#lith-list").height() + 8 + "px");
+			} else {
+				$("#lith-info").css("height", "");
+			}
+			currentDmuInfo.setContentHeight();
 		});
 	},
 	
@@ -87,6 +104,13 @@ var DmuListItem = Backbone.View.extend({
 		events.each(function(event) {
 			var ageView = new AgeListItem({ model: event, type: "event", id: "event-item-" + event.id });
 			$("#event-list").append(ageView.render().el);
+			
+			if ($("#event-list").height() > $("#event-info").height()) {
+				$("#event-info").css("height", $("#event-list").height() + 8 + "px");
+			} else {
+				$("#event-info").css("height", "");
+			}
+			currentDmuInfo.setContentHeight();
 		});
 	},
 	
@@ -95,6 +119,13 @@ var DmuListItem = Backbone.View.extend({
 		ages.each(function(age) {
 			var ageView = new AgeListItem({ model: age, type: "preferred-age", id: "age-item-" + age.id });
 			$("#preferred-age-list").append(ageView.render().el);
+			
+			if ($("#preferred-age-list").height() > $("#preferred-age-info").height()) {
+				$("#preferred-age-info").css("height", $("#preferred-age-list").height() + 8 + "px");
+			} else {
+				$("#preferred-age-info").css("height", "");
+			}
+			currentDmuInfo.setContentHeight();
 		});
 	}
 
@@ -128,7 +159,7 @@ var LithInfo = Backbone.View.extend({
 	},
 	
 	onChange: function(event, ui) {
-		this.model.set($(event.target).parent(".lith-attr").attr("property"), ui.item.value);
+		this.model.set($(event.target).parent("td").parent(".lith-attr").attr("property"), ui.item.value);
 		$(event.target).val(ui.item.label);
 		this.model.save();
 		this.listItem.render();
@@ -191,7 +222,7 @@ var AgeInfo = Backbone.View.extend({
 	},
 	
 	onChange: function(event, ui) {
-		this.model.set($(event.target).parent(".event-attr").attr("property"), ui.item.value);
+		this.model.set($(event.target).parent("td").parent(".event-attr").attr("property"), ui.item.value);
 		$(event.target).val(ui.item.label);
 		this.model.save();
 		this.listItem.render();

@@ -8,8 +8,6 @@ block scripts
 	script(type="text/javascript")
 		geomapId = !{geomapId};
 
-	script(type="text/javascript", src="/static/js/underscore-min.js")
-	script(type="text/javascript", src="/static/js/backbone-min.js")
 	script(type="text/javascript", src="/static/js/jquery-ui-1.8.18.custom.min.js")
 	include terminology/templates
 	script(type="text/javascript", src="/static/js/gsmlp/utils.js")
@@ -18,7 +16,10 @@ block scripts
 	script(type="text/javascript", src="/static/js/gsmlp/app.js")	
 					
 block content
-	#term-mapping-app
-		h3#map-unit-label Map Units
-		ul#mapunit-list
+	h3#geo-map-title
+		a(href='/ncgmp/gm/' + geomapId + '/')= geomapName
+	#term-mapping-app		
 		#mapunit-info
+		#mapunit-list-block
+			h3#map-unit-label Map Units
+			ul#mapunit-list		

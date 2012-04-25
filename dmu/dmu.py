@@ -2,16 +2,25 @@ from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseRedire
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models.fields.related import ForeignKey
+from django.contrib.gis.geos import Polygon
 from ncgmp.models import GeoMap, DescriptionOfMapUnits
-from ncgmp.utils import HttpGeoJsonResponse, generate_color_dictionary
+from ncgmp.utils import HttpGeoJsonResponse, SimpleJsonResponse, generate_color_dictionary
 import json, mimeparse
 
 @csrf_exempt
 def byCollection(req, gmId):
-    gm = get_object_or_404(GeoMap, pk=gmId)
+    gm = get_object_or_404(GeoMap, pk=gmId)            
     
     if req.method == "GET":
         dmus = DescriptionOfMapUnits.objects.filter(owningmap=gm).exclude(paragraphstyle__iexact="heading")
+        
+        queryBox = req.GET.get("bbox", False)
+        if queryBox:
+            # input is lower-left x,lower-left y,upper-right x,upper-right y, in WGS84
+            queryBox = queryBox.split(',')        
+            bbox = Polygon.from_bbox((queryBox[0], queryBox[1], queryBox[2], queryBox[3]))
+            dmus = dmus.filter(mapunitpolys__shape__intersects=bbox).distinct();
+                
         return dmuContentNegotiation(req.META['HTTP_ACCEPT'].lower(), dmus, False)        
     
     elif req.method == "POST":

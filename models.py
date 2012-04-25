@@ -311,6 +311,7 @@ class Vocabulary(models.Model):
 class VocabularyConcept(models.Model):
     class Meta:
         db_table = 'cgi_vocabularyconcept'
+        ordering = [ 'label' ]
         
     uri = models.CharField(max_length=200)
     label = models.CharField(max_length=200)
@@ -323,11 +324,12 @@ class VocabularyConcept(models.Model):
 class AgeTerm(models.Model):
     class Meta:
         db_table = 'cgi_ageterm'
+        ordering = [ 'olderage' ]
         
     uri = models.CharField(max_length=200)
     label = models.CharField(max_length=200)
-    olderage = models.CharField(max_length=200)
-    youngerage = models.CharField(max_length=200)
+    olderage = models.FloatField(verbose_name='Older age')
+    youngerage = models.FloatField(verbose_name='Younger age')
     vocabulary = models.ForeignKey("Vocabulary")
     
     def __unicode__(self):

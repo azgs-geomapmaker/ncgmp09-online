@@ -1,0 +1,91 @@
+@box-height: 30px;
+
+body {
+  margin: 0px;
+  padding: 0px;
+  font-family: Veranda, Arial, sans-serif;
+}
+
+html, body, #content, #leaflet-map {
+  height: 100%;
+}
+
+@font-face {
+  font-family: FGDCGeoAge;
+  src: url(../fonts/FGDCGA__.TTF);
+}
+
+#side-panel {
+  background-color: fade(black, 70%);
+  color: white;
+  padding: 0px 10px;
+  overflow-y: auto;
+}
+
+#legend-title a {
+  color: white;
+}
+
+.dmu-item-block {
+  * {
+    padding: 5px;
+  }
+  
+  &:after {
+    content: ' ';
+    clear: both;
+  }
+}
+
+.dmu-item-color {
+  width: 45px;
+  height: @box-height;
+  border: 1px solid black;
+  margin: 5px;
+  float: left;
+  text-align: center;
+}
+
+.dmu-item-label {
+  font-family: "FGDCGeoAge";
+  font-size: small;
+  color: black;
+  position: relative;
+  top: (0.5 * @box-height) - 12.5;
+}
+
+.dmu-item-text {
+  font-size: small;
+}
+
+.dmu-item-name {
+  font-weight: bold;
+  font-size: medium;
+  padding-bottom: 0px;
+}
+
+a {
+  text-decoration: none;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+#popup-header {
+  //text-align: center;
+  
+  h3 {
+    font-size: large;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }   
+}
+
+#attribute-container {
+  td.label {
+    text-align: right;
+    color: #888;
+  }
+}
+

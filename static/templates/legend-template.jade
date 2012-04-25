@@ -1,0 +1,13 @@
+h3#legend-title
+	a(href='../')= title
+#legend-container
+	for entry in dmus
+		div(id="" + entry.id + "-block").dmu-item-block
+			div("" + entry.id + "-color" style="background-color:" + entry.color +";").dmu-item-color
+				div("" + entry.id + "-label").dmu-item-label
+					span= entry.label
+			div("" + entry.id + "-text").dmu-item-text
+				div("" + entry.id + "-name").dmu-item-name
+					span= entry.name
+				div("" + entry.id + "-description").dmu-item-description
+					span= entry.description
