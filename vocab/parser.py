@@ -56,7 +56,8 @@ def updateVocabulary(vocab):
             endPred = rdflib.term.URIRef("http://resource.geosciml.org/schema/cgi/trs/3.0/end")
             newKwargs["olderage"] = findAgeValue(g, s, startPred)
             newKwargs["youngerage"] = findAgeValue(g, s, endPred)
-         
-        concepts.append(newClass(**newKwargs))
+        
+        if newKwargs['label'] != 'none': 
+            concepts.append(newClass(**newKwargs))
     newClass.objects.bulk_create(concepts)
     
