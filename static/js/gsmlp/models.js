@@ -34,9 +34,9 @@ var Lithology = BaseRow.extend({
 	initialize: function(properties) {
 		this.set("standardlithology_id", properties.standardlithology_id || guidGenerator());
 		this.set("mapunit", properties.mapunit || null);
-		this.set("parttype", properties.parttype || "http://resource.geosciml.org/classifier/cgi/geologicunitpartrole/0015");
-		this.set("lithology", properties.lithology || "http://resource.geosciml.org/classifier/cgi/lithology/0225");
-		this.set("proportionterm", properties.proportionterm || "http://resource.geosciml.org/classifier/cgi/proportionterm/0005");
+		this.set("parttype", properties.parttype || "http://resource.geosciml.org/classifier/cgi/geologicunitpartrole/part_of");
+		this.set("lithology", properties.lithology || "http://resource.geosciml.org/classifier/cgi/lithology/rock");
+		this.set("proportionterm", properties.proportionterm || "http://resource.geosciml.org/classifier/cgi/proportionterm/predominant");
 		this.set("proportionvalue", properties.proportionvalue || null);
 		this.set("scientificconfidence", properties.scientificconfidence || "std");
 		this.set("datasourceid", properties.datasourceid || "Generic.Application.Generated");
