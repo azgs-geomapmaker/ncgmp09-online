@@ -3,7 +3,7 @@ from django.core.serializers import serialize
 from django.contrib.gis.geos import GEOSGeometry
 from django.db.models.fields.related import ForeignKey
 from django.http import HttpResponse
-import json
+import json, re
 
 # Function to find a layer within a GDAL DataSource given its name
 def getLayerByName(layername, datasource):
@@ -88,9 +88,14 @@ def tohex(r,g,b):
 def generate_color_dictionary(dmu_queryset):
     color_dict = dict()
     for description in dmu_queryset:
-        r = int(description.areafillrgb.split(';')[0])
-        g = int(description.areafillrgb.split(';')[1])
-        b = int(description.areafillrgb.split(';')[2])
+        
+        delimiter = ';'
+        match = re.search('\D', description.areafillrgb)
+        if match: delimiter = match.group(0)
+        
+        r = int(description.areafillrgb.split(delimiter)[0])
+        g = int(description.areafillrgb.split(delimiter)[1])
+        b = int(description.areafillrgb.split(delimiter)[2])
         color_dict[description.pk] = tohex(r,g,b)
     
     return color_dict
